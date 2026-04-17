@@ -873,7 +873,7 @@ window._doLogin = async function() {
   try {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch(e) {
-    errEl.textContent = 'Inloggen mislukt. Controleer je gegevens.';
+    errEl.textContent = 'Fout: ' + e.code + ' — ' + e.message;
   }
 };
 

@@ -5,486 +5,447 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nieuwsbrief Planner — EHK & HCB</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
   --gold: #bfa761;
-  --gold-light: #f5edd8;
+  --gold-lt: #d4bc82;
+  --gold-dim: #f5edd8;
   --gold-dark: #8a7340;
   --navy: #1b2a4a;
-  --navy-mid: #2d4170;
-  --cream: #fdf6ec;
-  --ink: #1a1a1a;
-  --muted: #6b7280;
-  --border: rgba(0,0,0,0.08);
-  --border-strong: rgba(0,0,0,0.15);
+  --navy-mid: #243760;
+  --navy-lt: #e8ecf4;
+  --cream: #faf7f2;
+  --cream2: #f3ede3;
+  --ink: #1a1814;
+  --ink2: #4a4640;
+  --muted: #8c8880;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
   --surface: #ffffff;
-  --surface2: #f9f7f3;
+  --surface2: #f9f6f1;
   --radius: 10px;
   --radius-lg: 16px;
-  --seg1-bg: #e8f5ef; --seg1-fg: #0d5c3a;
-  --seg2-bg: #ede9fb; --seg2-fg: #3d2e8a;
-  --seg3-bg: #fef3e2; --seg3-fg: #7a4f0d;
-  --seg4-bg: #fdecea; --seg4-fg: #8a2318;
-  --st-idee-bg: #f3f4f6; --st-idee-fg: #4b5563;
-  --st-uitwerking-bg: #fef3e2; --st-uitwerking-fg: #92400e;
-  --st-klaar-bg: #ecfdf5; --st-klaar-fg: #065f46;
-  --st-verzonden-bg: #e0f2fe; --st-verzonden-fg: #075985;
-  --st-achterstand-bg: #fee2e2; --st-achterstand-fg: #991b1b;
+  --radius-xl: 24px;
+  --seg1-bg:#e4f2eb;--seg1-fg:#0a4f32;--seg1-dot:#1a9e62;
+  --seg2-bg:#eae6f8;--seg2-fg:#36267a;--seg2-dot:#6b54d4;
+  --seg3-bg:#fdf0df;--seg3-fg:#6b3f0a;--seg3-dot:#d4870f;
+  --seg4-bg:#fde8e6;--seg4-fg:#7a1f18;--seg4-dot:#d44035;
+  --st-idee-bg:#f1f1f0;--st-idee-fg:#5a5a58;
+  --st-wip-bg:#fdf0df;--st-wip-fg:#7a4a0a;
+  --st-klaar-bg:#e4f2eb;--st-klaar-fg:#0a4f32;
+  --st-ver-bg:#dceefe;--st-ver-fg:#0a3d6b;
+  --st-ach-bg:#fde8e6;--st-ach-fg:#7a1f18;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 15px; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 400;
-  background: var(--cream);
-  color: var(--ink);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:15px;scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;font-weight:400;background:var(--cream);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* ── Header ── */
-.header {
-  background: var(--navy);
-  color: white;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 56px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  gap: 12px;
-}
-.header-brand { display: flex; align-items: center; gap: 10px; }
-.header-logo { width: 28px; height: 28px; }
-.header-title { font-family: 'DM Serif Display', serif; font-size: 17px; letter-spacing: .01em; white-space: nowrap; }
-.header-sub { font-size: 11px; color: rgba(255,255,255,.5); white-space: nowrap; }
-.header-user { display: flex; align-items: center; gap: 8px; }
-.user-pill {
-  display: flex; align-items: center; gap: 6px;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 20px;
-  padding: 4px 12px 4px 6px;
-  cursor: pointer;
-  transition: background .15s;
-  font-size: 13px; color: white;
-}
-.user-pill:hover { background: rgba(255,255,255,.18); }
-.user-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; }
-.av-j { background: var(--seg1-bg); color: var(--seg1-fg); }
-.av-m { background: var(--seg2-bg); color: var(--seg2-fg); }
-.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
-.sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
-.sync-dot.offline { background: #f87171; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+/* ── Login ── */
+.login-wrap{display:none;position:fixed;inset:0;background:var(--navy);z-index:900;align-items:center;justify-content:center;flex-direction:column}
+.login-wrap.show{display:flex}
+.login-card{background:var(--surface);border-radius:var(--radius-xl);padding:48px 40px;width:calc(100% - 32px);max-width:380px;text-align:center}
+.login-emblem{width:64px;height:64px;margin:0 auto 24px;background:var(--navy);border-radius:16px;display:flex;align-items:center;justify-content:center}
+.login-emblem svg{width:36px;height:36px}
+.login-brand{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--navy);letter-spacing:.01em;margin-bottom:4px}
+.login-tagline{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:32px}
+.login-field{margin-bottom:14px;text-align:left}
+.login-field label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:5px;font-weight:500}
+.login-field input{width:100%;padding:11px 14px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface2);color:var(--ink);font-family:'Inter',sans-serif;font-size:14px;transition:border-color .15s,box-shadow .15s}
+.login-field input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(191,167,97,.15);background:var(--surface)}
+.login-btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:6px;letter-spacing:.02em;transition:background .15s}
+.login-btn:hover{background:var(--navy-mid)}
+.login-err{font-size:12px;color:#c0392b;margin-top:10px;min-height:16px}
+.login-divider{width:40px;height:1px;background:var(--gold);margin:0 auto 24px;opacity:.5}
+
+/* ── App shell ── */
+.app-header{position:sticky;top:0;z-index:100;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:58px;gap:16px}
+.app-header.hidden{display:none}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:32px;height:32px;background:rgba(191,167,97,.15);border:1px solid rgba(191,167,97,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.brand-mark svg{width:18px;height:18px}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:white;letter-spacing:.02em;white-space:nowrap}
+.brand-sep{color:rgba(191,167,97,.5);margin:0 2px}
+.header-right{display:flex;align-items:center;gap:10px}
+.sync-indicator{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.45)}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;transition:background .3s}
+.sync-dot.syncing{background:var(--gold);animation:blink 1s infinite}
+.sync-dot.error{background:#f87171}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.user-chip{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 12px 5px 6px;cursor:pointer;transition:background .15s}
+.user-chip:hover{background:rgba(255,255,255,.14)}
+.user-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;letter-spacing:.02em}
+.av-j{background:var(--seg1-bg);color:var(--seg1-fg)}
+.av-m{background:var(--seg2-bg);color:var(--seg2-fg)}
+.user-chip-name{font-size:12px;color:rgba(255,255,255,.85);font-weight:400}
 
 /* ── Nav ── */
-.nav-bar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.nav-bar::-webkit-scrollbar { display: none; }
-.nav-tab {
-  padding: 0 20px;
-  height: 44px;
-  display: flex; align-items: center; gap: 6px;
-  font-size: 13px; font-weight: 400;
-  color: var(--muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: color .15s, border-color .15s;
-  background: none; border-top: none; border-left: none; border-right: none;
-}
-.nav-tab.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 500; }
-.nav-tab:hover:not(.active) { color: var(--ink); }
-.nav-icon { font-size: 15px; }
+.app-nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:58px;z-index:99}
+.app-nav.hidden{display:none}
+.app-nav::-webkit-scrollbar{display:none}
+.nav-btn{display:flex;align-items:center;gap:7px;padding:0 22px;height:46px;font-size:13px;color:var(--muted);border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s;font-family:'Inter',sans-serif;font-weight:400;position:relative}
+.nav-btn.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:500}
+.nav-btn:hover:not(.active){color:var(--ink)}
+.nav-icon{font-size:14px}
+.idea-badge{background:var(--gold);color:white;font-size:9px;font-weight:600;padding:1px 5px;border-radius:10px;display:none}
 
-/* ── Main ── */
-.main { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+/* ── Main layout ── */
+.app-main{max-width:800px;margin:0 auto;padding:24px 16px 80px;display:none}
 
-/* ── Tab pages ── */
-.page { display: none; }
-.page.active { display: block; }
-
-/* ── Cards ── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  margin-bottom: 10px;
-  transition: box-shadow .15s;
-}
-.card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
-
-.mailing-header {
-  padding: 14px 16px;
-  display: flex; align-items: flex-start; gap: 10px;
-  cursor: pointer;
-}
-.mailing-date-col { text-align: center; min-width: 38px; }
-.mailing-day { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1; color: var(--navy); }
-.mailing-mon { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.mailing-body { flex: 1; min-width: 0; }
-.mailing-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
-.badge {
-  display: inline-block; font-size: 10px; font-weight: 500;
-  padding: 2px 7px; border-radius: 20px;
-  letter-spacing: .02em;
-}
-.mailing-title { font-size: 14px; font-weight: 500; line-height: 1.3; }
-.mailing-title.empty { color: var(--muted); font-style: italic; font-weight: 400; }
-.mailing-subject { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mailing-arrow { color: var(--muted); font-size: 16px; line-height: 1; transition: transform .2s; flex-shrink: 0; margin-top: 2px; }
-.mailing-arrow.open { transform: rotate(180deg); }
-
-/* ── Detail panel ── */
-.detail {
-  border-top: 1px solid var(--border);
-  padding: 16px;
-  display: none;
-  background: var(--surface2);
-}
-.detail.open { display: block; }
-.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media (max-width: 500px) { .fields-grid { grid-template-columns: 1fr; } }
-.field { margin-bottom: 0; }
-.field.full { grid-column: 1 / -1; }
-.field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
-.field input, .field textarea, .field select {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--ink);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  transition: border-color .15s, box-shadow .15s;
-  appearance: none;
-}
-.field input:focus, .field textarea:focus, .field select:focus {
-  outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(191,167,97,.15);
-}
-.field textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
-.detail-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 8px; }
-.detail-info { font-size: 11px; color: var(--muted); }
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: var(--radius);
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all .15s; border: 1px solid transparent;
-}
-.btn-primary { background: var(--navy); color: white; }
-.btn-primary:hover { background: var(--navy-mid); }
-.btn-ghost { background: transparent; color: var(--muted); border-color: var(--border-strong); }
-.btn-ghost:hover { background: var(--surface); color: var(--ink); }
-.btn-gold { background: var(--gold); color: white; border-color: var(--gold); }
-.btn-gold:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+/* ── Search & filter bar ── */
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:180px}
+.search-wrap input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;transition:border-color .15s,box-shadow .15s}
+.search-wrap input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(191,167,97,.12)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+.filter-select{padding:9px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--ink2);font-family:'Inter',sans-serif;font-size:13px;cursor:pointer;min-width:130px}
+.filter-select:focus{outline:none;border-color:var(--gold)}
 
 /* ── Month label ── */
-.month-label {
-  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
-  color: var(--muted); font-weight: 500;
-  padding: 18px 4px 8px;
-}
-.month-label:first-child { padding-top: 0; }
+.month-label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:500;padding:20px 2px 10px;display:flex;align-items:center;gap:10px}
+.month-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.month-label:first-child{padding-top:0}
+
+/* ── Mailing card ── */
+.mailing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:8px;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+.mailing-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.07);border-color:var(--border2)}
+.mailing-card.has-alert{border-left:3px solid var(--gold)}
+.card-header{padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;user-select:none}
+.date-block{text-align:center;min-width:36px;flex-shrink:0;padding-top:2px}
+.date-day{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--navy);line-height:1}
+.date-mon{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:1px}
+.card-mid{flex:1;min-width:0}
+.card-badges{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
+.badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;letter-spacing:.02em;white-space:nowrap}
+.card-title{font-size:14px;font-weight:500;color:var(--ink);line-height:1.35}
+.card-title.empty{color:var(--muted);font-style:italic;font-weight:300;font-family:'Cormorant Garamond',serif;font-size:15px}
+.card-subject{font-size:12px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-meta{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap}
+.card-meta-item{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.card-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.chevron{color:var(--muted);font-size:16px;transition:transform .2s;line-height:1}
+.chevron.open{transform:rotate(180deg)}
+.comment-pip{width:7px;height:7px;border-radius:50%;background:var(--gold);display:none}
+.comment-pip.show{display:block}
+
+/* ── Detail panel ── */
+.card-detail{display:none;border-top:1px solid var(--border);background:var(--surface2)}
+.card-detail.open{display:block}
+.detail-inner{padding:20px}
+.detail-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:18px}
+.dtab{padding:8px 16px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'Inter',sans-serif;transition:color .15s}
+.dtab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:500}
+.dtab-pane{display:none}.dtab-pane.active{display:block}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.fields-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.full{grid-column:1/-1}
+.field label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:500}
+.field input,.field textarea,.field select{padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;font-size:13px;transition:border-color .15s,box-shadow .15s;appearance:none}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(191,167,97,.12)}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6}
+.detail-actions{display:flex;align-items:center;justify-content:space-between;margin-top:16px;flex-wrap:wrap;gap:8px}
+.detail-info{font-size:11px;color:var(--muted)}
+
+/* ── Links section ── */
+.links-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.link-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.link-item a{font-size:13px;color:var(--navy);text-decoration:none;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.link-item a:hover{text-decoration:underline}
+.link-label{font-size:11px;color:var(--muted);flex-shrink:0}
+.link-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:2px 4px;line-height:1}
+.link-del:hover{color:#c0392b}
+.add-link-row{display:flex;gap:6px;flex-wrap:wrap}
+.add-link-row input{flex:1;min-width:120px;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;background:var(--surface);color:var(--ink)}
+.add-link-row input:focus{outline:none;border-color:var(--gold)}
+
+/* ── Comments ── */
+.comments-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px;max-height:280px;overflow-y:auto}
+.comment-item{display:flex;gap:9px;align-items:flex-start}
+.comment-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;margin-top:1px}
+.comment-body{flex:1;min-width:0}
+.comment-bubble{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.5;color:var(--ink)}
+.comment-meta{font-size:10px;color:var(--muted);margin-top:3px;display:flex;gap:8px}
+.comment-form{display:flex;gap:8px;align-items:flex-end}
+.comment-form textarea{flex:1;padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;resize:none;min-height:60px;background:var(--surface);color:var(--ink)}
+.comment-form textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(191,167,97,.12)}
+.no-comments{font-size:13px;color:var(--muted);font-style:italic;padding:8px 0}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;border:1px solid transparent;letter-spacing:.02em}
+.btn-navy{background:var(--navy);color:white;border-color:var(--navy)}
+.btn-navy:hover{background:var(--navy-mid)}
+.btn-ghost{background:transparent;color:var(--ink2);border-color:var(--border2)}
+.btn-ghost:hover{background:var(--surface2);border-color:var(--border2)}
+.btn-gold{background:var(--gold);color:white;border-color:var(--gold)}
+.btn-gold:hover{background:var(--gold-dark)}
+.btn-sm{padding:6px 12px;font-size:11px}
+.btn-icon{padding:7px 10px}
 
 /* ── Segment badges ── */
-.seg1 { background: var(--seg1-bg); color: var(--seg1-fg); }
-.seg2 { background: var(--seg2-bg); color: var(--seg2-fg); }
-.seg3 { background: var(--seg3-bg); color: var(--seg3-fg); }
-.seg4 { background: var(--seg4-bg); color: var(--seg4-fg); }
-.st-idee { background: var(--st-idee-bg); color: var(--st-idee-fg); }
-.st-in-uitwerking { background: var(--st-uitwerking-bg); color: var(--st-uitwerking-fg); }
-.st-klaar { background: var(--st-klaar-bg); color: var(--st-klaar-fg); }
-.st-verzonden { background: var(--st-verzonden-bg); color: var(--st-verzonden-fg); }
-.st-achterstand { background: var(--st-achterstand-bg); color: var(--st-achterstand-fg); }
+.seg1{background:var(--seg1-bg);color:var(--seg1-fg)}
+.seg2{background:var(--seg2-bg);color:var(--seg2-fg)}
+.seg3{background:var(--seg3-bg);color:var(--seg3-fg)}
+.seg4{background:var(--seg4-bg);color:var(--seg4-fg)}
+.st-idee{background:var(--st-idee-bg);color:var(--st-idee-fg)}
+.st-in-uitwerking{background:var(--st-wip-bg);color:var(--st-wip-fg)}
+.st-klaar{background:var(--st-klaar-bg);color:var(--st-klaar-fg)}
+.st-verzonden{background:var(--st-ver-bg);color:var(--st-ver-fg)}
+.st-achterstand{background:var(--st-ach-bg);color:var(--st-ach-fg)}
 
 /* ── Ideeënbak ── */
-.idea-composer {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 16px;
-  margin-bottom: 16px;
-}
-.composer-header { font-family: 'DM Serif Display', serif; font-size: 16px; margin-bottom: 12px; color: var(--navy); }
-.user-switch { display: flex; gap: 6px; margin-bottom: 12px; }
-.user-opt {
-  display: flex; align-items: center; gap: 6px;
-  padding: 6px 12px; border-radius: 20px;
-  border: 1px solid var(--border-strong);
-  cursor: pointer; font-size: 13px;
-  background: transparent; color: var(--muted);
-  transition: all .15s;
-}
-.user-opt.active { background: var(--navy); color: white; border-color: var(--navy); }
-.composer-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-@media(max-width:500px){ .composer-fields { grid-template-columns: 1fr; } }
-.composer-textarea { grid-column: 1 / -1; }
-.composer-textarea textarea {
-  width: 100%; padding: 10px 12px;
-  border: 1px solid var(--border-strong); border-radius: var(--radius);
-  font-family: 'DM Sans', sans-serif; font-size: 13px;
-  background: var(--surface); color: var(--ink);
-  resize: vertical; min-height: 56px; line-height: 1.5;
-}
-.composer-textarea textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(191,167,97,.15); }
-.composer-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
-.composer-row select {
-  flex: 1; min-width: 120px; padding: 8px 10px;
-  border: 1px solid var(--border-strong); border-radius: var(--radius);
-  font-family: 'DM Sans', sans-serif; font-size: 13px;
-  background: var(--surface); color: var(--ink); appearance: none;
-}
-.idea-item {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 14px 16px;
-  margin-bottom: 8px;
-  display: flex; gap: 12px; align-items: flex-start;
-}
-.idea-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
-.idea-content { flex: 1; min-width: 0; }
-.idea-text { font-size: 14px; line-height: 1.4; margin-bottom: 4px; }
-.idea-meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px; }
-.idea-meta .sep { opacity: .4; }
-.idea-del { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 4px; transition: color .15s; }
-.idea-del:hover { color: #dc2626; }
-.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
-.empty-icon { font-size: 32px; margin-bottom: 8px; }
-.empty-text { font-size: 14px; }
+.idea-composer{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
+.composer-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--navy);margin-bottom:14px}
+.user-switch{display:flex;gap:6px;margin-bottom:14px}
+.user-opt{display:flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid var(--border2);cursor:pointer;font-size:12px;background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.user-opt.active{background:var(--navy);color:white;border-color:var(--navy)}
+.composer-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.composer-grid{grid-template-columns:1fr}}
+.composer-field{display:flex;flex-direction:column;gap:4px}
+.composer-field.span2{grid-column:1/-1}
+.composer-field label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:500}
+.composer-field textarea,.composer-field select{padding:9px 11px;border:1px solid var(--border2);border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:13px;background:var(--surface);color:var(--ink)}
+.composer-field textarea{resize:vertical;min-height:64px;line-height:1.5}
+.composer-field textarea:focus,.composer-field select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(191,167,97,.12)}
+.composer-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:8px}
+.idea-link-row{display:flex;gap:6px;align-items:center}
+.idea-link-row input{flex:1;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;font-family:'Inter',sans-serif;background:var(--surface);color:var(--ink)}
+.idea-link-row input:focus{outline:none;border-color:var(--gold)}
+.idea-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;transition:box-shadow .15s}
+.idea-item:hover{box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.idea-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+.idea-body{flex:1;min-width:0}
+.idea-text{font-size:14px;line-height:1.45;margin-bottom:5px;color:var(--ink)}
+.idea-meta{font-size:11px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.idea-link-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;color:var(--navy);background:var(--navy-lt);padding:1px 6px;border-radius:10px;text-decoration:none}
+.idea-link-badge:hover{text-decoration:underline}
+.idea-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:2px 4px;transition:color .15s}
+.idea-del:hover{color:#c0392b}
+.ideas-empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.ideas-empty-icon{font-size:36px;margin-bottom:10px;opacity:.6}
+.ideas-empty-text{font-size:14px}
 
 /* ── Dashboard ── */
-.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 16px; }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; }
-.stat-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--navy); line-height: 1; }
-.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
-.section-title { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--navy); margin-bottom: 10px; }
-.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
-.progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.progress-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 3px; background: var(--navy); transition: width .4s; }
-.progress-label { font-size: 12px; color: var(--muted); min-width: 28px; text-align: right; }
-.seg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-.seg-row .badge { min-width: 150px; text-align: center; }
-.seg-count { font-size: 12px; color: var(--muted); }
-.status-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.status-bar-row .badge { min-width: 110px; text-align: center; }
-.export-row { margin-top: 8px; }
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:18px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:var(--navy);line-height:1}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:3px;letter-spacing:.03em}
+.dash-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px}
+.dash-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--navy);margin-bottom:14px}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.prog-label{font-size:12px;color:var(--ink2);min-width:110px}
+.prog-bar{flex:1;height:5px;background:var(--cream2);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width .5s}
+.prog-count{font-size:12px;color:var(--muted);min-width:28px;text-align:right}
+.seg-dash-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.dash-export{margin-top:4px}
+
+/* ── Alert banner ── */
+.alert-banner{background:linear-gradient(135deg,var(--navy),var(--navy-mid));border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.alert-banner-text{color:white;font-size:13px;flex:1}
+.alert-banner-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;margin-bottom:2px}
+.alert-banner-sub{font-size:12px;opacity:.7}
+.alert-banner-dismiss{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);color:white;border-radius:var(--radius);padding:6px 12px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.alert-banner-dismiss:hover{background:rgba(255,255,255,.25)}
 
 /* ── Toast ── */
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(8px);
-  background: var(--navy); color: white;
-  padding: 10px 18px; border-radius: 20px;
-  font-size: 13px; opacity: 0;
-  transition: opacity .2s, transform .2s;
-  pointer-events: none; white-space: nowrap;
-  z-index: 9999;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--navy);color:white;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap;z-index:9999;border:1px solid rgba(191,167,97,.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── User switcher modal ── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.4);
-  z-index: 200; align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface); border-radius: var(--radius-lg);
-  padding: 24px; max-width: 300px; width: calc(100% - 32px);
-}
-.modal h2 { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 6px; color: var(--navy); }
-.modal p { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
-.modal-opts { display: flex; flex-direction: column; gap: 8px; }
-.modal-opt {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px; border-radius: var(--radius);
-  border: 1px solid var(--border-strong);
-  cursor: pointer; transition: border-color .15s, background .15s;
-  background: none;
-  font-family: 'DM Sans', sans-serif;
-}
-.modal-opt:hover { background: var(--surface2); border-color: var(--gold); }
-.modal-opt-name { font-size: 14px; font-weight: 500; }
-.modal-opt-role { font-size: 12px; color: var(--muted); }
+/* ── Logout confirm ── */
+.logout-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800;align-items:center;justify-content:center}
+.logout-modal.show{display:flex}
+.logout-box{background:var(--surface);border-radius:var(--radius-lg);padding:28px;max-width:300px;width:calc(100% - 32px);text-align:center}
+.logout-box h3{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--navy);margin-bottom:8px}
+.logout-box p{font-size:13px;color:var(--muted);margin-bottom:20px}
+.logout-btns{display:flex;gap:8px;justify-content:center}
 
 /* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-/* ── Login scherm ── */
-.login-screen {
-  display: none; position: fixed; inset: 0;
-  background: var(--cream);
-  z-index: 500; align-items: center; justify-content: center;
+/* ── Responsive ── */
+@media(max-width:600px){
+  .app-header{padding:0 16px}
+  .brand-name{font-size:15px}
+  .sync-indicator{display:none}
+  .app-main{padding:16px 12px 80px}
+  .filter-bar{gap:6px}
+  .login-card{padding:36px 24px}
 }
-.login-screen.active { display: flex; }
-.login-box {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius-lg); padding: 36px 32px;
-  width: calc(100% - 32px); max-width: 360px; text-align: center;
-}
-.login-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 4px; }
-.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-.login-field { margin-bottom: 12px; text-align: left; }
-.login-field label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
-.login-field input {
-  width: 100%; padding: 10px 12px;
-  border: 1px solid var(--border-strong); border-radius: var(--radius);
-  background: var(--surface2); color: var(--ink);
-  font-family: 'DM Sans', sans-serif; font-size: 14px;
-}
-.login-field input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(191,167,97,.15); background: var(--surface); }
-.login-btn {
-  width: 100%; padding: 11px; background: var(--navy); color: white;
-  border: none; border-radius: var(--radius);
-  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-  cursor: pointer; margin-top: 8px; transition: background .15s;
-}
-.login-btn:hover { background: var(--navy-mid); }
-.login-error { font-size: 12px; color: #dc2626; margin-top: 10px; min-height: 18px; }
 </style>
 </head>
 <body>
 
-<!-- Login scherm -->
-<div class="login-screen active" id="loginScreen">
-  <div class="login-box">
-    <svg viewBox="0 0 52 52" fill="none" style="width:52px;height:52px;margin:0 auto 20px"><rect width="52" height="52" rx="14" fill="#1b2a4a"/><path d="M26 10C19 10 13 16 13 23c0 4.5 2.2 8.5 5.5 11V37h15v-3c3.3-2.5 5.5-6.5 5.5-11 0-7-6-13-13-13z" fill="#bfa761"/><rect x="18" y="37" width="16" height="3" rx="1.5" fill="rgba(255,255,255,.35)"/></svg>
-    <div class="login-title">Nieuwsbrief Planner</div>
-    <div class="login-sub">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
-    <div class="login-field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="jouw@email.nl" autocomplete="email"></div>
-    <div class="login-field"><label>Wachtwoord</label><input type="password" id="loginPassword" placeholder="20222022202220222022202220222022" autocomplete="current-password" onkeydown="if(event.key==='Enter')window._doLogin&&window._doLogin()"></div>
+<!-- Login -->
+<div class="login-wrap show" id="loginWrap">
+  <div class="login-card">
+    <div class="login-emblem">
+      <svg viewBox="0 0 36 36" fill="none">
+        <path d="M18 4C12 4 7 9 7 15c0 3.8 1.8 7.1 4.6 9.2V28h12.8v-3.8C27.2 22.1 29 18.8 29 15c0-6-5-11-11-11z" fill="#bfa761"/>
+        <rect x="11" y="28" width="14" height="2.5" rx="1.25" fill="rgba(191,167,97,.4)"/>
+      </svg>
+    </div>
+    <div class="login-brand">Nieuwsbrief Planner</div>
+    <div class="login-divider"></div>
+    <div class="login-tagline">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
+    <div class="login-field">
+      <label>E-mailadres</label>
+      <input type="email" id="loginEmail" placeholder="jouw@email.nl" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label>Wachtwoord</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')window._doLogin&&window._doLogin()">
+    </div>
     <button class="login-btn" onclick="window._doLogin&&window._doLogin()">Inloggen</button>
-    <div class="login-error" id="loginError"></div>
+    <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
 <!-- Header -->
-<header class="header" style="display:none">
-  <div class="header-brand">
-    <svg class="header-logo" viewBox="0 0 28 28" fill="none">
-      <rect width="28" height="28" rx="8" fill="rgba(255,255,255,.12)"/>
-      <path d="M14 6C10 6 7 9 7 13c0 2.5 1.2 4.7 3 6.1V21h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" fill="#bfa761"/>
-      <rect x="10" y="21" width="8" height="1.5" rx=".75" fill="rgba(255,255,255,.4)"/>
-    </svg>
-    <div>
-      <div class="header-title">Nieuwsbrief Planner</div>
-      <div class="header-sub">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
+<header class="app-header hidden" id="appHeader">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 18 18" fill="none">
+        <path d="M9 1C5.5 1 3 3.5 3 7c0 2.2 1 4.1 2.6 5.3V14h6.8v-1.7C13.9 11.1 15 9.2 15 7c0-3.5-2.5-6-6-6z" fill="#bfa761"/>
+        <rect x="5" y="14" width="8" height="1.5" rx=".75" fill="rgba(191,167,97,.5)"/>
+      </svg>
     </div>
+    <span class="brand-name">Nieuwsbrief Planner</span>
   </div>
-  <div class="header-user">
-    <div class="sync-dot" id="syncDot" title="Verbindingsstatus"></div>
-    <button class="user-pill" onclick="openUserModal()">
-      <div class="user-avatar av-j" id="currentAvatar">JE</div>
-      <span id="currentUserName">Jeffrey</span>
-    </button>
+  <div class="header-right">
+    <div class="sync-indicator">
+      <div class="sync-dot" id="syncDot"></div>
+      <span id="syncLabel">Verbonden</span>
+    </div>
+    <div class="user-chip" onclick="showLogoutModal()">
+      <div class="user-av av-j" id="userAv">JE</div>
+      <span class="user-chip-name" id="userName">Jeffrey</span>
+    </div>
   </div>
 </header>
 
 <!-- Nav -->
-<nav class="nav-bar" style="display:none">
-  <button class="nav-tab active" onclick="showPage('kalender',this)"><span class="nav-icon">📅</span> Kalender</button>
-  <button class="nav-tab" onclick="showPage('ideeen',this)"><span class="nav-icon">💡</span> Ideeënbak <span id="ideaCount" style="font-size:10px;background:var(--gold);color:white;padding:1px 5px;border-radius:10px;margin-left:2px;display:none"></span></button>
-  <button class="nav-tab" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+<nav class="app-nav hidden" id="appNav">
+  <button class="nav-btn active" onclick="showPage('kalender',this)">
+    <span class="nav-icon">📅</span> Kalender
+  </button>
+  <button class="nav-btn" onclick="showPage('ideeen',this)">
+    <span class="nav-icon">💡</span> Ideeënbak
+    <span class="idea-badge" id="ideaBadge"></span>
+  </button>
+  <button class="nav-btn" onclick="showPage('dashboard',this)">
+    <span class="nav-icon">📊</span> Dashboard
+  </button>
 </nav>
 
 <!-- Main -->
-<main class="main" style="display:none">
+<main class="app-main" id="appMain">
 
   <!-- Kalender -->
-  <div id="page-kalender" class="page active">
+  <div id="page-kalender" class="page-content">
+    <div class="filter-bar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Zoek op thema, onderwerp..." oninput="renderKalender()">
+      </div>
+      <select class="filter-select" id="filterSeg" onchange="renderKalender()">
+        <option value="">Alle segmenten</option>
+        <option value="seg3">Relaties Man – EHK</option>
+        <option value="seg4">Relaties Vrouw – EHK</option>
+        <option value="seg1">Debiteuren – EHK</option>
+        <option value="seg2">Debiteuren – HCB</option>
+      </select>
+      <select class="filter-select" id="filterStatus" onchange="renderKalender()">
+        <option value="">Alle statussen</option>
+        <option>Idee</option>
+        <option>In uitwerking</option>
+        <option>Klaar</option>
+        <option>Verzonden</option>
+        <option>Achterstand</option>
+      </select>
+    </div>
     <div id="kalenderList"></div>
   </div>
 
   <!-- Ideeënbak -->
-  <div id="page-ideeen" class="page">
+  <div id="page-ideeen" class="page-content" style="display:none">
     <div class="idea-composer">
-      <div class="composer-header">Idee inschieten</div>
+      <div class="composer-title">Idee inschieten</div>
       <div class="user-switch">
         <button class="user-opt active" id="uopt-jeffrey" onclick="setIdeaUser('jeffrey')">
-          <div class="user-avatar av-j" style="width:22px;height:22px;font-size:9px">JE</div> Jeffrey
+          <div class="user-av av-j" style="width:20px;height:20px;font-size:8px">JE</div> Jeffrey
         </button>
         <button class="user-opt" id="uopt-mario" onclick="setIdeaUser('mario')">
-          <div class="user-avatar av-m" style="width:22px;height:22px;font-size:9px">MA</div> Mario
+          <div class="user-av av-m" style="width:20px;height:20px;font-size:8px">MA</div> Mario
         </button>
       </div>
-      <div class="composer-textarea"><textarea id="ideaText" placeholder="Bijv. Klantverhaal na haartransplantatie, voor/na foto's van zomer..."></textarea></div>
-      <div class="composer-row" style="margin-top:8px">
-        <select id="ideaCompany" style="flex:1;min-width:140px">
-          <option value="EchtHaar Kliniek">EchtHaar Kliniek</option>
-          <option value="Hair Consultancy Bussum">Hair Consultancy Bussum</option>
-          <option value="Beide">Beide bedrijven</option>
-        </select>
-        <select id="ideaSeg" style="flex:1;min-width:140px">
-          <option value="">Alle segmenten</option>
-          <option value="seg3">Relaties Man – EHK</option>
-          <option value="seg4">Relaties Vrouw – EHK</option>
-          <option value="seg1">Debiteuren – EHK</option>
-          <option value="seg2">Debiteuren – HCB</option>
-        </select>
-        <button class="btn btn-gold" onclick="addIdea()">+ Toevoegen</button>
+      <div class="composer-grid">
+        <div class="composer-field span2">
+          <label>Idee / onderwerp</label>
+          <textarea id="ideaText" placeholder="Bijv. Klantverhaal na haartransplantatie, seizoensgebonden tips..."></textarea>
+        </div>
+        <div class="composer-field">
+          <label>Bedrijf</label>
+          <select id="ideaCompany">
+            <option>EchtHaar Kliniek</option>
+            <option>Hair Consultancy Bussum</option>
+            <option>Beide</option>
+          </select>
+        </div>
+        <div class="composer-field">
+          <label>Segment</label>
+          <select id="ideaSeg">
+            <option value="">Alle segmenten</option>
+            <option value="seg3">Relaties Man – EHK</option>
+            <option value="seg4">Relaties Vrouw – EHK</option>
+            <option value="seg1">Debiteuren – EHK</option>
+            <option value="seg2">Debiteuren – HCB</option>
+          </select>
+        </div>
+        <div class="composer-field span2">
+          <label>Link (optioneel)</label>
+          <div class="idea-link-row">
+            <input type="url" id="ideaLink" placeholder="https://...">
+          </div>
+        </div>
+      </div>
+      <div class="composer-footer">
+        <div style="font-size:11px;color:var(--muted)">Zichtbaar voor Jeffrey &amp; Mario</div>
+        <button class="btn btn-gold" onclick="addIdea()">+ Idee toevoegen</button>
       </div>
     </div>
     <div id="ideaList"></div>
   </div>
 
   <!-- Dashboard -->
-  <div id="page-dashboard" class="page">
+  <div id="page-dashboard" class="page-content" style="display:none">
     <div id="dashContent"></div>
   </div>
 
 </main>
 
-<!-- User modal -->
-<div class="modal-overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
-  <div class="modal">
-    <h2>Wie ben jij?</h2>
-    <p>Kies jouw naam — dit wordt zichtbaar bij notities en ideeën.</p>
-    <div class="modal-opts">
-      <button class="modal-opt" onclick="setCurrentUser('jeffrey')">
-        <div class="user-avatar av-j" style="width:36px;height:36px;font-size:13px">JE</div>
-        <div>
-          <div class="modal-opt-name">Jeffrey</div>
-          <div class="modal-opt-role">Marketing</div>
-        </div>
-      </button>
-      <button class="modal-opt" onclick="setCurrentUser('mario')">
-        <div class="user-avatar av-m" style="width:36px;height:36px;font-size:13px">MA</div>
-        <div>
-          <div class="modal-opt-name">Mario</div>
-          <div class="modal-opt-role">Co-owner / directeur</div>
-        </div>
-      </button>
+<!-- Logout modal -->
+<div class="logout-modal" id="logoutModal" onclick="if(event.target===this)hideLogoutModal()">
+  <div class="logout-box">
+    <h3>Uitloggen</h3>
+    <p>Wil je uitloggen uit de Nieuwsbrief Planner?</p>
+    <div class="logout-btns">
+      <button class="btn btn-ghost" onclick="hideLogoutModal()">Annuleren</button>
+      <button class="btn btn-navy" onclick="window._doLogout&&window._doLogout()">Uitloggen</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-// ── FIREBASE CONFIG ── Vervang dit met jouw eigen Firebase config ──────────
 const firebaseConfig = {
   apiKey: "AIzaSyBVFAsBl1jhTvsP6hr0KqQhj-wRL2RWkLM",
   authDomain: "nieuwsbrief-planner.firebaseapp.com",
@@ -493,207 +454,272 @@ const firebaseConfig = {
   messagingSenderId: "457440458411",
   appId: "1:457440458411:web:a9ef610c19237fe88e69ee"
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const db  = getFirestore(app);
 const auth = getAuth(app);
 
-// ── Data ─────────────────────────────────────────────────────────────────────
+// ── Constants ────────────────────────────────────────────────────────────────
 const SEGMENTS = [
-  {id:'seg3',label:'Relaties Man – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Man',cls:'seg3'},
-  {id:'seg4',label:'Relaties Vrouw – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Vrouw',cls:'seg4'},
-  {id:'seg1',label:'Debiteuren – EHK',bedrijf:'EchtHaar Kliniek',segment:'Debiteuren',geslacht:'M/V',cls:'seg1'},
-  {id:'seg2',label:'Debiteuren – HCB',bedrijf:'Hair Consultancy Bussum',segment:'Debiteuren',geslacht:'M/V',cls:'seg2'},
+  {id:'seg3',label:'Relaties Man – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Man',cls:'seg3',dot:'var(--seg3-dot)'},
+  {id:'seg4',label:'Relaties Vrouw – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Vrouw',cls:'seg4',dot:'var(--seg4-dot)'},
+  {id:'seg1',label:'Debiteuren – EHK',bedrijf:'EchtHaar Kliniek',segment:'Debiteuren',geslacht:'M/V',cls:'seg1',dot:'var(--seg1-dot)'},
+  {id:'seg2',label:'Debiteuren – HCB',bedrijf:'Hair Consultancy Bussum',segment:'Debiteuren',geslacht:'M/V',cls:'seg2',dot:'var(--seg2-dot)'},
 ];
 const STATUSES = ['Idee','In uitwerking','Klaar','Verzonden','Achterstand'];
-const DOELEN = ['Verkoop','Educatie','Retentie','Naamsbekendheid','Reactivatie'];
-const MONTHS = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
-const MONTHS_FULL = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const DOELEN   = ['Verkoop','Educatie','Retentie','Naamsbekendheid','Reactivatie'];
+const MONTHS   = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const MONTHS_F = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
 
 function getThursdays() {
-  const out = [];
-  let d = new Date(2026, 3, 23);
-  const end = new Date(2026, 11, 31);
-  while (d <= end) { out.push(new Date(d)); d.setDate(d.getDate() + 7); }
+  const out = []; let d = new Date(2026,3,23); const end = new Date(2026,11,31);
+  while(d<=end){out.push(new Date(d));d.setDate(d.getDate()+7);}
   return out;
 }
 const thursdays = getThursdays();
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const SOON_DAYS = 7;
 
-let mailings = {};
-let ideas = [];
-let expanded = {};
-let currentUser = localStorage.getItem('planner_user') || null;
+// ── State ────────────────────────────────────────────────────────────────────
+let mailings = {}, ideas = [], comments = {}, links = {};
+let expanded = {}, activeDetailTab = {};
 let ideaUser = 'jeffrey';
+let currentUserEmail = '';
+let unsub1 = null, unsub2 = null, unsub3 = null, unsub4 = null;
+let alertDismissed = false;
 
-// ── Sync status ───────────────────────────────────────────────────────────────
+// ── Sync dot ─────────────────────────────────────────────────────────────────
 function setSyncStatus(s) {
   const dot = document.getElementById('syncDot');
-  dot.className = 'sync-dot' + (s === 'syncing' ? ' syncing' : s === 'offline' ? ' offline' : '');
+  const lbl = document.getElementById('syncLabel');
+  if(s==='ok'){dot.className='sync-dot';lbl.textContent='Verbonden';}
+  else if(s==='syncing'){dot.className='sync-dot syncing';lbl.textContent='Opslaan...';}
+  else{dot.className='sync-dot error';lbl.textContent='Offline';}
 }
 
-// ── Save mailing ──────────────────────────────────────────────────────────────
-async function saveMailing(key) {
-  setSyncStatus('syncing');
-  try {
-    await setDoc(doc(db, 'mailings', key), mailings[key]);
+// ── Firestore ─────────────────────────────────────────────────────────────────
+function startListeners() {
+  unsub1 = onSnapshot(collection(db,'mailings'), snap => {
     setSyncStatus('ok');
-    showToast('Opgeslagen ✓');
-    renderCurrentPage();
-  } catch(e) {
-    setSyncStatus('offline');
-    showToast('Fout bij opslaan');
-  }
-}
-window.saveMailing = saveMailing;
+    snap.forEach(d => { mailings[d.id] = d.data(); });
+    renderCurrent();
+  }, ()=>setSyncStatus('error'));
 
-// ── Add idea ──────────────────────────────────────────────────────────────────
-async function addIdea() {
-  const txt = document.getElementById('ideaText').value.trim();
-  if (!txt) return;
-  const company = document.getElementById('ideaCompany').value;
-  const segId = document.getElementById('ideaSeg').value;
-  const now = new Date();
-  setSyncStatus('syncing');
-  try {
-    await addDoc(collection(db, 'ideas'), {
-      user: ideaUser,
-      text: txt,
-      company,
-      segId,
-      date: now.toLocaleDateString('nl-NL', {day:'numeric',month:'short',year:'numeric'}),
-      ts: now.getTime()
+  unsub2 = onSnapshot(query(collection(db,'ideas'),orderBy('ts','desc')), snap => {
+    ideas = snap.docs.map(d=>({fbId:d.id,...d.data()}));
+    renderCurrent(); updateIdeaBadge();
+  }, ()=>{});
+
+  unsub3 = onSnapshot(collection(db,'comments'), snap => {
+    comments = {};
+    snap.forEach(d => {
+      const dat = d.data();
+      if(!comments[dat.mailingKey]) comments[dat.mailingKey]=[];
+      comments[dat.mailingKey].push({fbId:d.id,...dat});
     });
-    document.getElementById('ideaText').value = '';
-    setSyncStatus('ok');
-    showToast('Idee toegevoegd!');
-  } catch(e) { setSyncStatus('offline'); showToast('Fout bij opslaan'); }
-}
-window.addIdea = addIdea;
+    Object.keys(comments).forEach(k=>comments[k].sort((a,b)=>a.ts-b.ts));
+    renderCurrent();
+  }, ()=>{});
 
-async function deleteIdea(fbId) {
-  setSyncStatus('syncing');
-  try {
-    await deleteDoc(doc(db, 'ideas', fbId));
-    setSyncStatus('ok');
-  } catch(e) { setSyncStatus('offline'); }
-}
-window.deleteIdea = deleteIdea;
-
-// ── Render helpers ────────────────────────────────────────────────────────────
-function segCls(s) { return s.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
-function stCls(s) { return 'st-' + s.toLowerCase().replace(/\s+/g,'-'); }
-
-function getMailing(key, segIdx) {
-  if (!mailings[key]) mailings[key] = {status:'Idee',thema:'',subject:'',cta:'',doel:'',notities:'',segIdx};
-  return mailings[key];
+  unsub4 = onSnapshot(collection(db,'links'), snap => {
+    links = {};
+    snap.forEach(d => {
+      const dat = d.data();
+      if(!links[dat.mailingKey]) links[dat.mailingKey]=[];
+      links[dat.mailingKey].push({fbId:d.id,...dat});
+    });
+    renderCurrent();
+  }, ()=>{});
 }
 
-function esc(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const stCls = s => 'st-'+s.toLowerCase().replace(/\s+/g,'-');
+const dateKey = d => d.toISOString().slice(0,10);
+const getMailing = (key,si) => { if(!mailings[key]) mailings[key]={status:'Idee',thema:'',subject:'',cta:'',doel:'',notities:'',segIdx:si}; return mailings[key]; };
+
+function isUrgent(d, status) {
+  if(status==='Verzonden') return false;
+  const diff = (d - TODAY) / 86400000;
+  return diff >= 0 && diff <= SOON_DAYS;
+}
+function isPast(d, status) {
+  return status !== 'Verzonden' && d < TODAY;
 }
 
 // ── Render kalender ───────────────────────────────────────────────────────────
 function renderKalender() {
-  let html = '';
-  let curMonth = -1;
-  thursdays.forEach((d, i) => {
-    const seg = SEGMENTS[i % 4];
-    const key = d.toISOString().slice(0,10);
-    const m = getMailing(key, i % 4);
-    const mo = d.getMonth();
-    if (mo !== curMonth) {
-      html += `<div class="month-label">${MONTHS_FULL[mo]} 2026</div>`;
-      curMonth = mo;
-    }
-    const isExp = !!expanded[key];
-    const dayNum = d.getDate();
-    const monStr = MONTHS[mo];
-    html += `<div class="card">
-      <div class="mailing-header" onclick="toggleExpand('${key}')">
-        <div class="mailing-date-col">
-          <div class="mailing-day">${dayNum}</div>
-          <div class="mailing-mon">${monStr}</div>
+  const search = (document.getElementById('searchInput')?.value||'').toLowerCase();
+  const segF   = document.getElementById('filterSeg')?.value||'';
+  const stF    = document.getElementById('filterStatus')?.value||'';
+
+  // Alert: upcoming this week
+  let alertHtml = '';
+  if(!alertDismissed) {
+    const upcoming = thursdays.filter((d,i) => {
+      const diff = (d - TODAY) / 86400000;
+      const m = getMailing(dateKey(d), i%4);
+      return diff >= 0 && diff <= SOON_DAYS && m.status !== 'Verzonden';
+    });
+    if(upcoming.length > 0) {
+      const d = upcoming[0]; const i = thursdays.indexOf(d);
+      const seg = SEGMENTS[i%4];
+      const diff = Math.round((d-TODAY)/86400000);
+      alertHtml = `<div class="alert-banner">
+        <div class="alert-banner-text">
+          <div class="alert-banner-title">Mailing over ${diff===0?'vandaag':diff+' dagen'}</div>
+          <div class="alert-banner-sub">${seg.label} · ${d.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'})}</div>
         </div>
-        <div class="mailing-body">
-          <div class="mailing-badges">
+        <button class="alert-banner-dismiss" onclick="alertDismissed=true;renderKalender()">Sluiten</button>
+      </div>`;
+    }
+  }
+
+  let html = alertHtml;
+  let curMonth = -1;
+  let shown = 0;
+
+  thursdays.forEach((d,i) => {
+    const seg = SEGMENTS[i%4];
+    const key = dateKey(d);
+    const m = getMailing(key, i%4);
+
+    // Filters
+    if(segF && seg.id !== segF) return;
+    if(stF && m.status !== stF) return;
+    if(search && !((m.thema||'').toLowerCase().includes(search) || (m.subject||'').toLowerCase().includes(search) || seg.label.toLowerCase().includes(search))) return;
+
+    shown++;
+    const mo = d.getMonth();
+    if(mo !== curMonth) { html += `<div class="month-label">${MONTHS_F[mo]}</div>`; curMonth=mo; }
+
+    const isExp = !!expanded[key];
+    const urgent = isUrgent(d, m.status);
+    const past = isPast(d, m.status);
+    const hasComments = (comments[key]||[]).length > 0;
+    const hasLinks = (links[key]||[]).length > 0;
+    const activeTab = activeDetailTab[key] || 'content';
+
+    const commentList = (comments[key]||[]).map(c => {
+      const isJ = c.user==='jeffrey';
+      return `<div class="comment-item">
+        <div class="comment-av ${isJ?'av-j':'av-m'}">${isJ?'JE':'MA'}</div>
+        <div class="comment-body">
+          <div class="comment-bubble">${esc(c.text)}</div>
+          <div class="comment-meta"><span>${isJ?'Jeffrey':'Mario'}</span><span>${c.date||''}</span></div>
+        </div>
+      </div>`;
+    }).join('') || '<div class="no-comments">Nog geen opmerkingen.</div>';
+
+    const linkList = (links[key]||[]).map(l =>
+      `<div class="link-item">
+        <span class="link-label">${esc(l.label||'Link')}</span>
+        <a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.url)}</a>
+        <button class="link-del" onclick="deleteLink('${l.fbId}')">×</button>
+      </div>`
+    ).join('') || '';
+
+    html += `<div class="mailing-card${urgent||past?' has-alert':''}" id="card-${key}">
+      <div class="card-header" onclick="toggleExpand('${key}')">
+        <div class="date-block">
+          <div class="date-day">${d.getDate()}</div>
+          <div class="date-mon">${MONTHS[mo]}</div>
+        </div>
+        <div class="card-mid">
+          <div class="card-badges">
             <span class="badge ${seg.cls}">${seg.label}</span>
             <span class="badge ${stCls(m.status)}">${m.status}</span>
-            ${m.doel ? `<span class="badge st-idee">${m.doel}</span>` : ''}
+            ${urgent?'<span class="badge" style="background:#fdf0df;color:#7a4f0d">⏰ Binnenkort</span>':''}
+            ${past?'<span class="badge" style="background:#fde8e6;color:#7a1f18">⚠ Verlopen</span>':''}
           </div>
-          <div class="mailing-title ${m.thema ? '' : 'empty'}">${m.thema || 'Nog geen thema'}</div>
-          ${m.subject ? `<div class="mailing-subject">${esc(m.subject)}</div>` : ''}
+          <div class="card-title ${m.thema?'':'empty'}">${esc(m.thema)||'Nog geen thema'}</div>
+          ${m.subject?`<div class="card-subject">${esc(m.subject)}</div>`:''}
+          <div class="card-meta">
+            ${m.doel?`<span class="card-meta-item">◈ ${m.doel}</span>`:''}
+            ${hasComments?`<span class="card-meta-item" style="color:var(--gold)">💬 ${(comments[key]||[]).length}</span>`:''}
+            ${hasLinks?`<span class="card-meta-item" style="color:var(--navy)">🔗 ${(links[key]||[]).length}</span>`:''}
+          </div>
         </div>
-        <div class="mailing-arrow ${isExp ? 'open' : ''}">⌄</div>
+        <div class="card-right">
+          <div class="chevron ${isExp?'open':''}">⌄</div>
+        </div>
       </div>
-      <div class="detail ${isExp ? 'open' : ''}" id="det-${key}">
-        <div class="fields-grid">
-          <div class="field full">
-            <label>Thema nieuwsbrief</label>
-            <input type="text" value="${esc(m.thema)}" placeholder="Bijv. Haarverzorging lente 2026"
-              onchange="setField('${key}','thema',this.value)">
+      <div class="card-detail ${isExp?'open':''}" id="det-${key}">
+        <div class="detail-inner">
+          <div class="detail-tabs">
+            <button class="dtab ${activeTab==='content'?'active':''}" onclick="setDetailTab('${key}','content')">Inhoud</button>
+            <button class="dtab ${activeTab==='comments'?'active':''}" onclick="setDetailTab('${key}','comments')">Opmerkingen ${hasComments?`(${(comments[key]||[]).length})`:''}  </button>
+            <button class="dtab ${activeTab==='links'?'active':''}" onclick="setDetailTab('${key}','links')">Links ${hasLinks?`(${(links[key]||[]).length})`:''}  </button>
           </div>
-          <div class="field full">
-            <label>Onderwerpregel</label>
-            <input type="text" value="${esc(m.subject)}" placeholder="Bijv. 🌸 Klaar voor de lente?"
-              onchange="setField('${key}','subject',this.value)">
+
+          <div class="dtab-pane ${activeTab==='content'?'active':''}">
+            <div class="fields-grid">
+              <div class="field full"><label>Thema nieuwsbrief</label>
+                <input type="text" value="${esc(m.thema)}" placeholder="Bijv. Haarverzorging lente 2026" onchange="setField('${key}','thema',this.value)"></div>
+              <div class="field full"><label>Onderwerpregel</label>
+                <input type="text" value="${esc(m.subject)}" placeholder="Bijv. 🌸 Klaar voor de lente?" onchange="setField('${key}','subject',this.value)"></div>
+              <div class="field"><label>Status</label>
+                <select onchange="setField('${key}','status',this.value)">${STATUSES.map(s=>`<option ${m.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+              <div class="field"><label>Doel mailing</label>
+                <select onchange="setField('${key}','doel',this.value)"><option value="">— Kies doel —</option>${DOELEN.map(s=>`<option ${m.doel===s?'selected':''}>${s}</option>`).join('')}</select></div>
+              <div class="field full"><label>Call-to-action</label>
+                <input type="text" value="${esc(m.cta)}" placeholder="Bijv. Plan een afspraak" onchange="setField('${key}','cta',this.value)"></div>
+              <div class="field full"><label>Notities</label>
+                <textarea placeholder="Interne notities..." onchange="setField('${key}','notities',this.value)">${esc(m.notities)}</textarea></div>
+            </div>
+            <div class="detail-actions">
+              <div class="detail-info">${seg.bedrijf} · ${seg.geslacht}</div>
+              <button class="btn btn-navy" onclick="saveMailing('${key}')">Opslaan</button>
+            </div>
           </div>
-          <div class="field">
-            <label>Status</label>
-            <select onchange="setField('${key}','status',this.value)">
-              ${STATUSES.map(s => `<option ${m.status===s?'selected':''}>${s}</option>`).join('')}
-            </select>
+
+          <div class="dtab-pane ${activeTab==='comments'?'active':''}">
+            <div class="comments-list">${commentList}</div>
+            <div class="comment-form">
+              <textarea id="ctxt-${key}" placeholder="Voeg een opmerking toe..."></textarea>
+              <button class="btn btn-navy btn-sm" onclick="addComment('${key}')">Sturen</button>
+            </div>
           </div>
-          <div class="field">
-            <label>Doel mailing</label>
-            <select onchange="setField('${key}','doel',this.value)">
-              <option value="">— Kies doel —</option>
-              ${DOELEN.map(s => `<option ${m.doel===s?'selected':''}>${s}</option>`).join('')}
-            </select>
+
+          <div class="dtab-pane ${activeTab==='links'?'active':''}">
+            <div class="links-list">${linkList}</div>
+            <div class="add-link-row">
+              <input type="text" id="llbl-${key}" placeholder="Label (bijv. Briefing doc)">
+              <input type="url" id="lurl-${key}" placeholder="https://...">
+              <button class="btn btn-ghost btn-sm" onclick="addLink('${key}')">+ Link</button>
+            </div>
           </div>
-          <div class="field full">
-            <label>Call-to-action</label>
-            <input type="text" value="${esc(m.cta)}" placeholder="Bijv. Plan een afspraak"
-              onchange="setField('${key}','cta',this.value)">
-          </div>
-          <div class="field full">
-            <label>Notities &amp; opmerkingen</label>
-            <textarea placeholder="Interne notities, links, feedback, ideeën..."
-              onchange="setField('${key}','notities',this.value)">${esc(m.notities)}</textarea>
-          </div>
-        </div>
-        <div class="detail-actions">
-          <div class="detail-info">${seg.bedrijf} · ${seg.geslacht}</div>
-          <button class="btn btn-primary" onclick="saveMailing('${key}')">Opslaan</button>
         </div>
       </div>
     </div>`;
   });
+
+  if(shown===0) html += '<div style="text-align:center;padding:48px 0;color:var(--muted);font-size:14px">Geen mailings gevonden voor deze filters.</div>';
   document.getElementById('kalenderList').innerHTML = html;
 }
 
 // ── Render ideeën ─────────────────────────────────────────────────────────────
 function renderIdeeen() {
-  const listEl = document.getElementById('ideaList');
-  if (ideas.length === 0) {
-    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-text">Nog geen ideeën. Schiet er gerust eentje in!</div></div>`;
+  const segMap = {}; SEGMENTS.forEach(s=>segMap[s.id]=s);
+  const el = document.getElementById('ideaList');
+  if(ideas.length===0){
+    el.innerHTML=`<div class="ideas-empty"><div class="ideas-empty-icon">💡</div><div class="ideas-empty-text">Nog geen ideeën. Schiet er gerust eentje in!</div></div>`;
     return;
   }
-  const segMap = {};
-  SEGMENTS.forEach(s => segMap[s.id] = s);
-  listEl.innerHTML = ideas.map(idea => {
-    const isJ = idea.user === 'jeffrey';
+  el.innerHTML = ideas.map(idea => {
+    const isJ = idea.user==='jeffrey';
     const seg = segMap[idea.segId];
     return `<div class="idea-item">
-      <div class="idea-avatar ${isJ ? 'av-j' : 'av-m'}">${isJ ? 'JE' : 'MA'}</div>
-      <div class="idea-content">
+      <div class="idea-av ${isJ?'av-j':'av-m'}">${isJ?'JE':'MA'}</div>
+      <div class="idea-body">
         <div class="idea-text">${esc(idea.text)}</div>
         <div class="idea-meta">
-          <span>${isJ ? 'Jeffrey' : 'Mario'}</span>
-          <span class="sep">·</span>
+          <span>${isJ?'Jeffrey':'Mario'}</span>
+          <span style="opacity:.4">·</span>
           <span>${esc(idea.company)}</span>
-          ${seg ? `<span class="sep">·</span><span class="badge ${seg.cls}" style="font-size:10px">${seg.label}</span>` : ''}
-          <span class="sep">·</span>
+          ${seg?`<span style="opacity:.4">·</span><span class="badge ${seg.cls}" style="font-size:10px">${seg.label}</span>`:''}
+          ${idea.link?`<a class="idea-link-badge" href="${esc(idea.link)}" target="_blank" rel="noopener">🔗 Link</a>`:''}
+          <span style="opacity:.4">·</span>
           <span>${esc(idea.date)}</span>
         </div>
       </div>
@@ -705,212 +731,214 @@ function renderIdeeen() {
 // ── Render dashboard ──────────────────────────────────────────────────────────
 function renderDashboard() {
   const total = thursdays.length;
-  const counts = {};
-  STATUSES.forEach(s => counts[s] = 0);
-  thursdays.forEach((d, i) => {
-    const key = d.toISOString().slice(0,10);
-    const m = getMailing(key, i % 4);
-    counts[m.status] = (counts[m.status] || 0) + 1;
+  const counts = {}; STATUSES.forEach(s=>counts[s]=0);
+  thursdays.forEach((d,i) => {
+    const m = getMailing(dateKey(d),i%4);
+    counts[m.status]=(counts[m.status]||0)+1;
   });
-  const done = counts['Verzonden'] || 0;
-  const pct = Math.round(done / total * 100);
-  const stColors = {
-    'Idee':'#9ca3af','In uitwerking':'#d97706','Klaar':'#059669','Verzonden':'#0284c7','Achterstand':'#dc2626'
-  };
+  const done = counts['Verzonden']||0;
+  const pct = Math.round(done/total*100);
+  const stColors = {'Idee':'#9ca3af','In uitwerking':'#d97706','Klaar':'#059669','Verzonden':'#0284c7','Achterstand':'#dc2626'};
 
-  let html = `<div class="stats-row">
-    <div class="stat"><div class="stat-num">${total}</div><div class="stat-lbl">Mailings gepland</div></div>
-    <div class="stat"><div class="stat-num">${done}</div><div class="stat-lbl">Verzonden</div></div>
-    <div class="stat"><div class="stat-num">${counts['Klaar']||0}</div><div class="stat-lbl">Klaar</div></div>
-    <div class="stat"><div class="stat-num">${counts['Achterstand']||0}</div><div class="stat-lbl">Achterstand</div></div>
-    <div class="stat"><div class="stat-num">${ideas.length}</div><div class="stat-lbl">Ideeën</div></div>
+  document.getElementById('dashContent').innerHTML = `
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-lbl">Mailings gepland</div></div>
+    <div class="stat-card"><div class="stat-num">${done}</div><div class="stat-lbl">Verzonden</div></div>
+    <div class="stat-card"><div class="stat-num">${counts['Klaar']||0}</div><div class="stat-lbl">Klaar</div></div>
+    <div class="stat-card"><div class="stat-num">${counts['Achterstand']||0}</div><div class="stat-lbl">Achterstand</div></div>
+    <div class="stat-card"><div class="stat-num">${ideas.length}</div><div class="stat-lbl">Ideeën</div></div>
   </div>
-
-  <div class="dash-card">
-    <div class="section-title">Voortgang 2026</div>
+  <div class="dash-section">
+    <div class="dash-title">Voortgang 2026</div>
     <div class="progress-row">
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="progress-label">${pct}%</div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:var(--navy)"></div></div>
+      <div class="prog-count">${pct}%</div>
     </div>
     <div style="font-size:12px;color:var(--muted)">${done} van ${total} mailings verzonden</div>
   </div>
-
-  <div class="dash-card">
-    <div class="section-title">Status verdeling</div>
-    ${STATUSES.map(s => {
-      const c = counts[s] || 0;
-      const p = Math.round(c / total * 100);
-      return `<div class="status-bar-row">
-        <span class="badge ${stCls(s)}" style="min-width:110px;text-align:center">${s}</span>
-        <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${p}%;background:${stColors[s]}"></div></div>
-        <span class="progress-label">${c}</span>
+  <div class="dash-section">
+    <div class="dash-title">Status verdeling</div>
+    ${STATUSES.map(s=>{const c=counts[s]||0;const p=Math.round(c/total*100);return`<div class="progress-row">
+      <div class="prog-label"><span class="badge ${stCls(s)}">${s}</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${stColors[s]}"></div></div>
+      <div class="prog-count">${c}</div>
+    </div>`;}).join('')}
+  </div>
+  <div class="dash-section">
+    <div class="dash-title">Per segment</div>
+    ${SEGMENTS.map((seg,si)=>{
+      const keys=thursdays.filter((_,i)=>i%4===si).map(d=>dateKey(d));
+      const sent=keys.filter(k=>mailings[k]&&mailings[k].status==='Verzonden').length;
+      const p=Math.round(sent/keys.length*100);
+      return`<div class="progress-row">
+        <div class="prog-label"><span class="badge ${seg.cls}" style="font-size:10px">${seg.label}</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${p}%;background:${seg.dot}"></div></div>
+        <div class="prog-count">${sent}/${keys.length}</div>
       </div>`;
     }).join('')}
   </div>
-
-  <div class="dash-card">
-    <div class="section-title">Per segment</div>
-    ${SEGMENTS.map((seg, si) => {
-      const keys = thursdays.filter((_,i) => i%4===si).map(d => d.toISOString().slice(0,10));
-      const sent = keys.filter(k => mailings[k] && mailings[k].status === 'Verzonden').length;
-      return `<div class="seg-row">
-        <span class="badge ${seg.cls}" style="min-width:150px;text-align:center">${seg.label}</span>
-        <span class="seg-count">${sent} / ${keys.length} verzonden</span>
-      </div>`;
-    }).join('')}
-  </div>
-
-  <div class="dash-card export-row">
-    <div class="section-title" style="margin-bottom:8px">Export</div>
-    <button class="btn btn-ghost" onclick="exportCSV()">⬇ Exporteren als CSV</button>
+  <div class="dash-section dash-export">
+    <div class="dash-title">Export</div>
+    <button class="btn btn-ghost" onclick="window._exportCSV&&window._exportCSV()">⬇ Exporteren als CSV</button>
   </div>`;
-
-  document.getElementById('dashContent').innerHTML = html;
 }
 
-
-window.toggleExpand = function(key) {
-  expanded[key] = !expanded[key];
-  renderKalender();
+// ── Actions ───────────────────────────────────────────────────────────────────
+window.toggleExpand = key => { expanded[key]=!expanded[key]; renderKalender(); };
+window.setDetailTab = (key,tab) => { activeDetailTab[key]=tab; renderKalender(); };
+window.setField = (key,field,val) => { if(!mailings[key]) return; mailings[key][field]=val; };
+window.setIdeaUser = u => {
+  ideaUser=u;
+  document.querySelectorAll('.user-opt').forEach(b=>b.classList.remove('active'));
+  document.getElementById('uopt-'+u).classList.add('active');
 };
 
-window.setField = function(key, field, val) {
-  if (!mailings[key]) return;
-  mailings[key][field] = val;
-};
+async function saveMailing(key) {
+  setSyncStatus('syncing');
+  try { await setDoc(doc(db,'mailings',key),mailings[key]); setSyncStatus('ok'); showToast('Opgeslagen ✓'); renderKalender(); }
+  catch(e) { setSyncStatus('error'); showToast('Fout bij opslaan'); }
+}
+window.saveMailing = saveMailing;
 
-window.showPage = function(name, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+async function addIdea() {
+  const txt = document.getElementById('ideaText').value.trim(); if(!txt) return;
+  const link = document.getElementById('ideaLink').value.trim();
+  const now = new Date();
+  setSyncStatus('syncing');
+  try {
+    await addDoc(collection(db,'ideas'),{user:ideaUser,text:txt,company:document.getElementById('ideaCompany').value,segId:document.getElementById('ideaSeg').value,link,date:now.toLocaleDateString('nl-NL',{day:'numeric',month:'short',year:'numeric'}),ts:now.getTime()});
+    document.getElementById('ideaText').value=''; document.getElementById('ideaLink').value='';
+    setSyncStatus('ok'); showToast('Idee toegevoegd!');
+  } catch(e) { setSyncStatus('error'); showToast('Fout bij opslaan'); }
+}
+window.addIdea = addIdea;
+
+async function deleteIdea(fbId) {
+  setSyncStatus('syncing');
+  try { await deleteDoc(doc(db,'ideas',fbId)); setSyncStatus('ok'); } catch(e) { setSyncStatus('error'); }
+}
+window.deleteIdea = deleteIdea;
+
+async function addComment(key) {
+  const el = document.getElementById('ctxt-'+key);
+  const txt = el?.value.trim(); if(!txt) return;
+  const now = new Date();
+  setSyncStatus('syncing');
+  try {
+    await addDoc(collection(db,'comments'),{mailingKey:key,user:ideaUser,text:txt,date:now.toLocaleDateString('nl-NL',{day:'numeric',month:'short'}),ts:now.getTime()});
+    el.value=''; setSyncStatus('ok');
+  } catch(e) { setSyncStatus('error'); showToast('Fout bij opslaan'); }
+}
+window.addComment = addComment;
+
+async function addLink(key) {
+  const lbl = document.getElementById('llbl-'+key)?.value.trim()||'Link';
+  const url = document.getElementById('lurl-'+key)?.value.trim(); if(!url) return;
+  setSyncStatus('syncing');
+  try {
+    await addDoc(collection(db,'links'),{mailingKey:key,label:lbl,url,ts:Date.now()});
+    setSyncStatus('ok');
+  } catch(e) { setSyncStatus('error'); showToast('Fout bij opslaan'); }
+}
+window.addLink = addLink;
+
+async function deleteLink(fbId) {
+  setSyncStatus('syncing');
+  try { await deleteDoc(doc(db,'links',fbId)); setSyncStatus('ok'); } catch(e) { setSyncStatus('error'); }
+}
+window.deleteLink = deleteLink;
+
+// ── Page switching ────────────────────────────────────────────────────────────
+window.showPage = (name, btn) => {
+  document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).style.display='block';
   btn.classList.add('active');
-  renderCurrentPage();
+  renderCurrent();
 };
 
-function renderCurrentPage() {
-  if (document.getElementById('page-kalender').classList.contains('active')) renderKalender();
-  else if (document.getElementById('page-ideeen').classList.contains('active')) renderIdeeen();
-  else if (document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+function renderCurrent() {
+  const pages = ['kalender','ideeen','dashboard'];
+  const active = pages.find(p => document.getElementById('page-'+p)?.style.display !== 'none');
+  if(active==='kalender') renderKalender();
+  else if(active==='ideeen') renderIdeeen();
+  else if(active==='dashboard') renderDashboard();
 }
 
-function updateIdeaCount() {
-  const el = document.getElementById('ideaCount');
-  if (ideas.length > 0) { el.textContent = ideas.length; el.style.display = 'inline'; }
-  else el.style.display = 'none';
+function updateIdeaBadge() {
+  const el = document.getElementById('ideaBadge');
+  if(ideas.length>0){el.textContent=ideas.length;el.style.display='inline';}
+  else el.style.display='none';
 }
 
-window.setIdeaUser = function(u) {
-  ideaUser = u;
-  document.querySelectorAll('.user-opt').forEach(b => b.classList.remove('active'));
-  document.getElementById('uopt-' + u).classList.add('active');
-};
-
-window.openUserModal = function() {
-  document.getElementById('userModal').classList.add('open');
-};
-window.closeUserModal = function() {
-  document.getElementById('userModal').classList.remove('open');
-};
-window.setCurrentUser = function(u) {
-  currentUser = u;
-  localStorage.setItem('planner_user', u);
-  document.getElementById('currentUserName').textContent = u === 'jeffrey' ? 'Jeffrey' : 'Mario';
-  document.getElementById('currentAvatar').className = 'user-avatar ' + (u === 'jeffrey' ? 'av-j' : 'av-m');
-  document.getElementById('currentAvatar').textContent = u === 'jeffrey' ? 'JE' : 'MA';
-  setIdeaUser(u);
-  closeUserModal();
-};
-
-window.exportCSV = function() {
-  const rows = [['Datum','Bedrijf','Segment','Geslacht','Thema','Onderwerpregel','Doel','CTA','Status','Notities']];
-  thursdays.forEach((d, i) => {
-    const seg = SEGMENTS[i % 4];
-    const key = d.toISOString().slice(0,10);
-    const m = getMailing(key, i % 4);
+// ── Export ────────────────────────────────────────────────────────────────────
+window._exportCSV = () => {
+  const rows=[['Datum','Bedrijf','Segment','Geslacht','Thema','Onderwerpregel','Doel','CTA','Status','Notities']];
+  thursdays.forEach((d,i)=>{
+    const seg=SEGMENTS[i%4]; const key=dateKey(d); const m=getMailing(key,i%4);
     rows.push([d.toLocaleDateString('nl-NL'),seg.bedrijf,seg.segment,seg.geslacht,m.thema,m.subject,m.doel,m.cta,m.status,m.notities]);
   });
-  const csv = rows.map(r => r.map(c => '"' + (c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
-  const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'nieuwsbrief_kalender_2026.csv'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('CSV gedownload!');
+  const csv=rows.map(r=>r.map(c=>'"'+(c||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'})),download:'nieuwsbrief_kalender_2026.csv'});
+  a.click(); showToast('CSV gedownload!');
 };
 
+// ── Toast ─────────────────────────────────────────────────────────────────────
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
 }
 
-// ── Auth & Init ──────────────────────────────────────────────────────────────
-let firestoreUnsubMailings = null;
-let firestoreUnsubIdeas = null;
-
-function startFirestoreListeners() {
-  if (firestoreUnsubMailings) firestoreUnsubMailings();
-  if (firestoreUnsubIdeas) firestoreUnsubIdeas();
-
-  firestoreUnsubMailings = onSnapshot(collection(db, 'mailings'), snap => {
-    setSyncStatus('ok');
-    snap.forEach(d => { mailings[d.id] = d.data(); });
-    renderCurrentPage();
-  }, () => setSyncStatus('offline'));
-
-  firestoreUnsubIdeas = onSnapshot(query(collection(db, 'ideas'), orderBy('ts', 'desc')), snap => {
-    ideas = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
-    renderCurrentPage();
-    updateIdeaCount();
-  }, () => {});
-}
-
-window._doLogin = async function() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPassword').value;
-  const errEl = document.getElementById('loginError');
-  errEl.textContent = '';
-  if (!email || !pass) { errEl.textContent = 'Vul je e-mailadres en wachtwoord in.'; return; }
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch(e) {
-    errEl.textContent = 'Inloggen mislukt. Controleer je gegevens.';
-  }
+// ── Auth ──────────────────────────────────────────────────────────────────────
+window._doLogin = async () => {
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  const err=document.getElementById('loginErr'); err.textContent='';
+  if(!email||!pass){err.textContent='Vul je gegevens in.';return;}
+  try { await signInWithEmailAndPassword(auth,email,pass); }
+  catch(e) { err.textContent='Inloggen mislukt. Controleer je gegevens.'; }
 };
 
-window.doLogout = async function() {
-  await signOut(auth);
+window._doLogout = async () => {
+  if(unsub1)unsub1(); if(unsub2)unsub2(); if(unsub3)unsub3(); if(unsub4)unsub4();
+  await signOut(auth); hideLogoutModal();
 };
+
+window.showLogoutModal = () => document.getElementById('logoutModal').classList.add('show');
+window.hideLogoutModal = () => document.getElementById('logoutModal').classList.remove('show');
 
 onAuthStateChanged(auth, user => {
-  const loginScreen = document.getElementById('loginScreen');
-  const appHeader = document.querySelector('.header');
-  const appNav = document.querySelector('.nav-bar');
-  const appMain = document.querySelector('.main');
+  const loginWrap = document.getElementById('loginWrap');
+  const header = document.getElementById('appHeader');
+  const nav = document.getElementById('appNav');
+  const main = document.getElementById('appMain');
 
-  if (user) {
-    loginScreen.classList.remove('active');
-    appHeader.style.display = '';
-    appNav.style.display = '';
-    appMain.style.display = '';
+  if(user) {
+    loginWrap.classList.remove('show');
+    header.classList.remove('hidden');
+    nav.classList.remove('hidden');
+    main.style.display='block';
 
-    // Detecteer gebruiker op basis van e-mail
+    currentUserEmail = user.email;
     const isJeffrey = user.email.toLowerCase().includes('lenting') || user.email.toLowerCase().includes('jeffrey');
-    const detectedUser = isJeffrey ? 'jeffrey' : 'mario';
-    setCurrentUser(detectedUser);
-    startFirestoreListeners();
+    const u = isJeffrey ? 'jeffrey' : 'mario';
+    ideaUser = u;
+    document.getElementById('userName').textContent = isJeffrey?'Jeffrey':'Mario';
+    document.getElementById('userAv').className = 'user-av '+(isJeffrey?'av-j':'av-m');
+    document.getElementById('userAv').textContent = isJeffrey?'JE':'MA';
+    document.querySelectorAll('.user-opt').forEach(b=>b.classList.remove('active'));
+    const uBtn = document.getElementById('uopt-'+u);
+    if(uBtn) uBtn.classList.add('active');
+
+    startListeners();
     renderKalender();
   } else {
-    loginScreen.classList.add('active');
-    appHeader.style.display = 'none';
-    appNav.style.display = 'none';
-    appMain.style.display = 'none';
+    loginWrap.classList.add('show');
+    header.classList.add('hidden');
+    nav.classList.add('hidden');
+    main.style.display='none';
   }
 });
-
-// Voeg uitlogknop toe aan header user-pill
-window.openUserModal = function() {
-  if (confirm('Uitloggen?')) doLogout();
-};
 </script>
 </body>
 </html>

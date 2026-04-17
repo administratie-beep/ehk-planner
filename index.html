@@ -486,7 +486,7 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from
 
 // ── FIREBASE CONFIG ── Vervang dit met jouw eigen Firebase config ──────────
 const firebaseConfig = {
-  apiKey: "AIzaSyBVFAsBl1jhTvsP6hr0KqQhj-wRL2RwkLM",
+  apiKey: "AIzaSyBVFAsBl1jhTvsP6hr0KqQhj-wRL2RWkLM",
   authDomain: "nieuwsbrief-planner.firebaseapp.com",
   projectId: "nieuwsbrief-planner",
   storageBucket: "nieuwsbrief-planner.firebasestorage.app",
@@ -873,7 +873,7 @@ window._doLogin = async function() {
   try {
     await signInWithEmailAndPassword(auth, email, pass);
   } catch(e) {
-    errEl.textContent = 'Fout: ' + e.code + ' — ' + e.message;
+    errEl.textContent = 'Inloggen mislukt. Controleer je gegevens.';
   }
 };
 

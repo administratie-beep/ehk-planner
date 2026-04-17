@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nieuwsbrief Planner — EHK & HCB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #bfa761;
+  --gold-light: #f5edd8;
+  --gold-dark: #8a7340;
+  --navy: #1b2a4a;
+  --navy-mid: #2d4170;
+  --cream: #fdf6ec;
+  --ink: #1a1a1a;
+  --muted: #6b7280;
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.15);
+  --surface: #ffffff;
+  --surface2: #f9f7f3;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --seg1-bg: #e8f5ef; --seg1-fg: #0d5c3a;
+  --seg2-bg: #ede9fb; --seg2-fg: #3d2e8a;
+  --seg3-bg: #fef3e2; --seg3-fg: #7a4f0d;
+  --seg4-bg: #fdecea; --seg4-fg: #8a2318;
+  --st-idee-bg: #f3f4f6; --st-idee-fg: #4b5563;
+  --st-uitwerking-bg: #fef3e2; --st-uitwerking-fg: #92400e;
+  --st-klaar-bg: #ecfdf5; --st-klaar-fg: #065f46;
+  --st-verzonden-bg: #e0f2fe; --st-verzonden-fg: #075985;
+  --st-achterstand-bg: #fee2e2; --st-achterstand-fg: #991b1b;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--navy);
+  color: white;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  gap: 12px;
+}
+.header-brand { display: flex; align-items: center; gap: 10px; }
+.header-logo { width: 28px; height: 28px; }
+.header-title { font-family: 'DM Serif Display', serif; font-size: 17px; letter-spacing: .01em; white-space: nowrap; }
+.header-sub { font-size: 11px; color: rgba(255,255,255,.5); white-space: nowrap; }
+.header-user { display: flex; align-items: center; gap: 8px; }
+.user-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 20px;
+  padding: 4px 12px 4px 6px;
+  cursor: pointer;
+  transition: background .15s;
+  font-size: 13px; color: white;
+}
+.user-pill:hover { background: rgba(255,255,255,.18); }
+.user-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; }
+.av-j { background: var(--seg1-bg); color: var(--seg1-fg); }
+.av-m { background: var(--seg2-bg); color: var(--seg2-fg); }
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; flex-shrink: 0; }
+.sync-dot.syncing { background: var(--gold); animation: pulse 1s infinite; }
+.sync-dot.offline { background: #f87171; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ── Nav ── */
+.nav-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav-bar::-webkit-scrollbar { display: none; }
+.nav-tab {
+  padding: 0 20px;
+  height: 44px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 400;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+  background: none; border-top: none; border-left: none; border-right: none;
+}
+.nav-tab.active { color: var(--navy); border-bottom-color: var(--gold); font-weight: 500; }
+.nav-tab:hover:not(.active) { color: var(--ink); }
+.nav-icon { font-size: 15px; }
+
+/* ── Main ── */
+.main { max-width: 780px; margin: 0 auto; padding: 20px 16px 60px; }
+
+/* ── Tab pages ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 10px;
+  transition: box-shadow .15s;
+}
+.card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+
+.mailing-header {
+  padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 10px;
+  cursor: pointer;
+}
+.mailing-date-col { text-align: center; min-width: 38px; }
+.mailing-day { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1; color: var(--navy); }
+.mailing-mon { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.mailing-body { flex: 1; min-width: 0; }
+.mailing-badges { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 5px; }
+.badge {
+  display: inline-block; font-size: 10px; font-weight: 500;
+  padding: 2px 7px; border-radius: 20px;
+  letter-spacing: .02em;
+}
+.mailing-title { font-size: 14px; font-weight: 500; line-height: 1.3; }
+.mailing-title.empty { color: var(--muted); font-style: italic; font-weight: 400; }
+.mailing-subject { font-size: 12px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mailing-arrow { color: var(--muted); font-size: 16px; line-height: 1; transition: transform .2s; flex-shrink: 0; margin-top: 2px; }
+.mailing-arrow.open { transform: rotate(180deg); }
+
+/* ── Detail panel ── */
+.detail {
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  display: none;
+  background: var(--surface2);
+}
+.detail.open { display: block; }
+.fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 500px) { .fields-grid { grid-template-columns: 1fr; } }
+.field { margin-bottom: 0; }
+.field.full { grid-column: 1 / -1; }
+.field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+.field input, .field textarea, .field select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+}
+.field input:focus, .field textarea:focus, .field select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(191,167,97,.15);
+}
+.field textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+.detail-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; flex-wrap: wrap; gap: 8px; }
+.detail-info { font-size: 11px; color: var(--muted); }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .15s; border: 1px solid transparent;
+}
+.btn-primary { background: var(--navy); color: white; }
+.btn-primary:hover { background: var(--navy-mid); }
+.btn-ghost { background: transparent; color: var(--muted); border-color: var(--border-strong); }
+.btn-ghost:hover { background: var(--surface); color: var(--ink); }
+.btn-gold { background: var(--gold); color: white; border-color: var(--gold); }
+.btn-gold:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+
+/* ── Month label ── */
+.month-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); font-weight: 500;
+  padding: 18px 4px 8px;
+}
+.month-label:first-child { padding-top: 0; }
+
+/* ── Segment badges ── */
+.seg1 { background: var(--seg1-bg); color: var(--seg1-fg); }
+.seg2 { background: var(--seg2-bg); color: var(--seg2-fg); }
+.seg3 { background: var(--seg3-bg); color: var(--seg3-fg); }
+.seg4 { background: var(--seg4-bg); color: var(--seg4-fg); }
+.st-idee { background: var(--st-idee-bg); color: var(--st-idee-fg); }
+.st-in-uitwerking { background: var(--st-uitwerking-bg); color: var(--st-uitwerking-fg); }
+.st-klaar { background: var(--st-klaar-bg); color: var(--st-klaar-fg); }
+.st-verzonden { background: var(--st-verzonden-bg); color: var(--st-verzonden-fg); }
+.st-achterstand { background: var(--st-achterstand-bg); color: var(--st-achterstand-fg); }
+
+/* ── Ideeënbak ── */
+.idea-composer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.composer-header { font-family: 'DM Serif Display', serif; font-size: 16px; margin-bottom: 12px; color: var(--navy); }
+.user-switch { display: flex; gap: 6px; margin-bottom: 12px; }
+.user-opt {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 20px;
+  border: 1px solid var(--border-strong);
+  cursor: pointer; font-size: 13px;
+  background: transparent; color: var(--muted);
+  transition: all .15s;
+}
+.user-opt.active { background: var(--navy); color: white; border-color: var(--navy); }
+.composer-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media(max-width:500px){ .composer-fields { grid-template-columns: 1fr; } }
+.composer-textarea { grid-column: 1 / -1; }
+.composer-textarea textarea {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  background: var(--surface); color: var(--ink);
+  resize: vertical; min-height: 56px; line-height: 1.5;
+}
+.composer-textarea textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(191,167,97,.15); }
+.composer-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.composer-row select {
+  flex: 1; min-width: 120px; padding: 8px 10px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  background: var(--surface); color: var(--ink); appearance: none;
+}
+.idea-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.idea-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+.idea-content { flex: 1; min-width: 0; }
+.idea-text { font-size: 14px; line-height: 1.4; margin-bottom: 4px; }
+.idea-meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px; }
+.idea-meta .sep { opacity: .4; }
+.idea-del { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 18px; line-height: 1; padding: 2px 4px; border-radius: 4px; transition: color .15s; }
+.idea-del:hover { color: #dc2626; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+.empty-icon { font-size: 32px; margin-bottom: 8px; }
+.empty-text { font-size: 14px; }
+
+/* ── Dashboard ── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 14px; }
+.stat-num { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--navy); line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.section-title { font-family: 'DM Serif Display', serif; font-size: 16px; color: var(--navy); margin-bottom: 10px; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; }
+.progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.progress-bar { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: var(--navy); transition: width .4s; }
+.progress-label { font-size: 12px; color: var(--muted); min-width: 28px; text-align: right; }
+.seg-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.seg-row .badge { min-width: 150px; text-align: center; }
+.seg-count { font-size: 12px; color: var(--muted); }
+.status-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.status-bar-row .badge { min-width: 110px; text-align: center; }
+.export-row { margin-top: 8px; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(8px);
+  background: var(--navy); color: white;
+  padding: 10px 18px; border-radius: 20px;
+  font-size: 13px; opacity: 0;
+  transition: opacity .2s, transform .2s;
+  pointer-events: none; white-space: nowrap;
+  z-index: 9999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── User switcher modal ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: 200; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border-radius: var(--radius-lg);
+  padding: 24px; max-width: 300px; width: calc(100% - 32px);
+}
+.modal h2 { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 6px; color: var(--navy); }
+.modal p { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.modal-opts { display: flex; flex-direction: column; gap: 8px; }
+.modal-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px; border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  cursor: pointer; transition: border-color .15s, background .15s;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.modal-opt:hover { background: var(--surface2); border-color: var(--gold); }
+.modal-opt-name { font-size: 14px; font-weight: 500; }
+.modal-opt-role { font-size: 12px; color: var(--muted); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-brand">
+    <svg class="header-logo" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="8" fill="rgba(255,255,255,.12)"/>
+      <path d="M14 6C10 6 7 9 7 13c0 2.5 1.2 4.7 3 6.1V21h8v-1.9c1.8-1.4 3-3.6 3-6.1 0-4-3-7-7-7z" fill="#bfa761"/>
+      <rect x="10" y="21" width="8" height="1.5" rx=".75" fill="rgba(255,255,255,.4)"/>
+    </svg>
+    <div>
+      <div class="header-title">Nieuwsbrief Planner</div>
+      <div class="header-sub">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
+    </div>
+  </div>
+  <div class="header-user">
+    <div class="sync-dot" id="syncDot" title="Verbindingsstatus"></div>
+    <button class="user-pill" onclick="openUserModal()">
+      <div class="user-avatar av-j" id="currentAvatar">JE</div>
+      <span id="currentUserName">Jeffrey</span>
+    </button>
+  </div>
+</header>
+
+<!-- Nav -->
+<nav class="nav-bar">
+  <button class="nav-tab active" onclick="showPage('kalender',this)"><span class="nav-icon">📅</span> Kalender</button>
+  <button class="nav-tab" onclick="showPage('ideeen',this)"><span class="nav-icon">💡</span> Ideeënbak <span id="ideaCount" style="font-size:10px;background:var(--gold);color:white;padding:1px 5px;border-radius:10px;margin-left:2px;display:none"></span></button>
+  <button class="nav-tab" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Kalender -->
+  <div id="page-kalender" class="page active">
+    <div id="kalenderList"></div>
+  </div>
+
+  <!-- Ideeënbak -->
+  <div id="page-ideeen" class="page">
+    <div class="idea-composer">
+      <div class="composer-header">Idee inschieten</div>
+      <div class="user-switch">
+        <button class="user-opt active" id="uopt-jeffrey" onclick="setIdeaUser('jeffrey')">
+          <div class="user-avatar av-j" style="width:22px;height:22px;font-size:9px">JE</div> Jeffrey
+        </button>
+        <button class="user-opt" id="uopt-mario" onclick="setIdeaUser('mario')">
+          <div class="user-avatar av-m" style="width:22px;height:22px;font-size:9px">MA</div> Mario
+        </button>
+      </div>
+      <div class="composer-textarea"><textarea id="ideaText" placeholder="Bijv. Klantverhaal na haartransplantatie, voor/na foto's van zomer..."></textarea></div>
+      <div class="composer-row" style="margin-top:8px">
+        <select id="ideaCompany" style="flex:1;min-width:140px">
+          <option value="EchtHaar Kliniek">EchtHaar Kliniek</option>
+          <option value="Hair Consultancy Bussum">Hair Consultancy Bussum</option>
+          <option value="Beide">Beide bedrijven</option>
+        </select>
+        <select id="ideaSeg" style="flex:1;min-width:140px">
+          <option value="">Alle segmenten</option>
+          <option value="seg3">Relaties Man – EHK</option>
+          <option value="seg4">Relaties Vrouw – EHK</option>
+          <option value="seg1">Debiteuren – EHK</option>
+          <option value="seg2">Debiteuren – HCB</option>
+        </select>
+        <button class="btn btn-gold" onclick="addIdea()">+ Toevoegen</button>
+      </div>
+    </div>
+    <div id="ideaList"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="page-dashboard" class="page">
+    <div id="dashContent"></div>
+  </div>
+
+</main>
+
+<!-- User modal -->
+<div class="modal-overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal">
+    <h2>Wie ben jij?</h2>
+    <p>Kies jouw naam — dit wordt zichtbaar bij notities en ideeën.</p>
+    <div class="modal-opts">
+      <button class="modal-opt" onclick="setCurrentUser('jeffrey')">
+        <div class="user-avatar av-j" style="width:36px;height:36px;font-size:13px">JE</div>
+        <div>
+          <div class="modal-opt-name">Jeffrey</div>
+          <div class="modal-opt-role">Marketing</div>
+        </div>
+      </button>
+      <button class="modal-opt" onclick="setCurrentUser('mario')">
+        <div class="user-avatar av-m" style="width:36px;height:36px;font-size:13px">MA</div>
+        <div>
+          <div class="modal-opt-name">Mario</div>
+          <div class="modal-opt-role">Co-owner / directeur</div>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+// ── FIREBASE CONFIG ── Vervang dit met jouw eigen Firebase config ──────────
+const firebaseConfig = {
+  apiKey: "AIzaSyBVFAsBl1jhTvsP6hr0KqQhj-wRL2RwkLM",
+  authDomain: "nieuwsbrief-planner.firebaseapp.com",
+  projectId: "nieuwsbrief-planner",
+  storageBucket: "nieuwsbrief-planner.firebasestorage.app",
+  messagingSenderId: "457440458411",
+  appId: "1:457440458411:web:a9ef610c19237fe88e69ee"
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── Data ─────────────────────────────────────────────────────────────────────
+const SEGMENTS = [
+  {id:'seg3',label:'Relaties Man – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Man',cls:'seg3'},
+  {id:'seg4',label:'Relaties Vrouw – EHK',bedrijf:'EchtHaar Kliniek',segment:'Relaties',geslacht:'Vrouw',cls:'seg4'},
+  {id:'seg1',label:'Debiteuren – EHK',bedrijf:'EchtHaar Kliniek',segment:'Debiteuren',geslacht:'M/V',cls:'seg1'},
+  {id:'seg2',label:'Debiteuren – HCB',bedrijf:'Hair Consultancy Bussum',segment:'Debiteuren',geslacht:'M/V',cls:'seg2'},
+];
+const STATUSES = ['Idee','In uitwerking','Klaar','Verzonden','Achterstand'];
+const DOELEN = ['Verkoop','Educatie','Retentie','Naamsbekendheid','Reactivatie'];
+const MONTHS = ['jan','feb','mrt','apr','mei','jun','jul','aug','sep','okt','nov','dec'];
+const MONTHS_FULL = ['Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+
+function getThursdays() {
+  const out = [];
+  let d = new Date(2026, 3, 23);
+  const end = new Date(2026, 11, 31);
+  while (d <= end) { out.push(new Date(d)); d.setDate(d.getDate() + 7); }
+  return out;
+}
+const thursdays = getThursdays();
+
+let mailings = {};
+let ideas = [];
+let expanded = {};
+let currentUser = localStorage.getItem('planner_user') || null;
+let ideaUser = 'jeffrey';
+
+// ── Sync status ───────────────────────────────────────────────────────────────
+function setSyncStatus(s) {
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot' + (s === 'syncing' ? ' syncing' : s === 'offline' ? ' offline' : '');
+}
+
+// ── Firestore listeners ───────────────────────────────────────────────────────
+// Mailings
+onSnapshot(collection(db, 'mailings'), snap => {
+  setSyncStatus('ok');
+  snap.forEach(d => { mailings[d.id] = d.data(); });
+  renderCurrentPage();
+}, () => setSyncStatus('offline'));
+
+// Ideas
+onSnapshot(query(collection(db, 'ideas'), orderBy('ts', 'desc')), snap => {
+  ideas = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+  renderCurrentPage();
+  updateIdeaCount();
+}, () => {});
+
+// ── Save mailing ──────────────────────────────────────────────────────────────
+async function saveMailing(key) {
+  setSyncStatus('syncing');
+  try {
+    await setDoc(doc(db, 'mailings', key), mailings[key]);
+    setSyncStatus('ok');
+    showToast('Opgeslagen ✓');
+    renderCurrentPage();
+  } catch(e) {
+    setSyncStatus('offline');
+    showToast('Fout bij opslaan');
+  }
+}
+window.saveMailing = saveMailing;
+
+// ── Add idea ──────────────────────────────────────────────────────────────────
+async function addIdea() {
+  const txt = document.getElementById('ideaText').value.trim();
+  if (!txt) return;
+  const company = document.getElementById('ideaCompany').value;
+  const segId = document.getElementById('ideaSeg').value;
+  const now = new Date();
+  setSyncStatus('syncing');
+  try {
+    await addDoc(collection(db, 'ideas'), {
+      user: ideaUser,
+      text: txt,
+      company,
+      segId,
+      date: now.toLocaleDateString('nl-NL', {day:'numeric',month:'short',year:'numeric'}),
+      ts: now.getTime()
+    });
+    document.getElementById('ideaText').value = '';
+    setSyncStatus('ok');
+    showToast('Idee toegevoegd!');
+  } catch(e) { setSyncStatus('offline'); showToast('Fout bij opslaan'); }
+}
+window.addIdea = addIdea;
+
+async function deleteIdea(fbId) {
+  setSyncStatus('syncing');
+  try {
+    await deleteDoc(doc(db, 'ideas', fbId));
+    setSyncStatus('ok');
+  } catch(e) { setSyncStatus('offline'); }
+}
+window.deleteIdea = deleteIdea;
+
+// ── Render helpers ────────────────────────────────────────────────────────────
+function segCls(s) { return s.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+function stCls(s) { return 'st-' + s.toLowerCase().replace(/\s+/g,'-'); }
+
+function getMailing(key, segIdx) {
+  if (!mailings[key]) mailings[key] = {status:'Idee',thema:'',subject:'',cta:'',doel:'',notities:'',segIdx};
+  return mailings[key];
+}
+
+function esc(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Render kalender ───────────────────────────────────────────────────────────
+function renderKalender() {
+  let html = '';
+  let curMonth = -1;
+  thursdays.forEach((d, i) => {
+    const seg = SEGMENTS[i % 4];
+    const key = d.toISOString().slice(0,10);
+    const m = getMailing(key, i % 4);
+    const mo = d.getMonth();
+    if (mo !== curMonth) {
+      html += `<div class="month-label">${MONTHS_FULL[mo]} 2026</div>`;
+      curMonth = mo;
+    }
+    const isExp = !!expanded[key];
+    const dayNum = d.getDate();
+    const monStr = MONTHS[mo];
+    html += `<div class="card">
+      <div class="mailing-header" onclick="toggleExpand('${key}')">
+        <div class="mailing-date-col">
+          <div class="mailing-day">${dayNum}</div>
+          <div class="mailing-mon">${monStr}</div>
+        </div>
+        <div class="mailing-body">
+          <div class="mailing-badges">
+            <span class="badge ${seg.cls}">${seg.label}</span>
+            <span class="badge ${stCls(m.status)}">${m.status}</span>
+            ${m.doel ? `<span class="badge st-idee">${m.doel}</span>` : ''}
+          </div>
+          <div class="mailing-title ${m.thema ? '' : 'empty'}">${m.thema || 'Nog geen thema'}</div>
+          ${m.subject ? `<div class="mailing-subject">${esc(m.subject)}</div>` : ''}
+        </div>
+        <div class="mailing-arrow ${isExp ? 'open' : ''}">⌄</div>
+      </div>
+      <div class="detail ${isExp ? 'open' : ''}" id="det-${key}">
+        <div class="fields-grid">
+          <div class="field full">
+            <label>Thema nieuwsbrief</label>
+            <input type="text" value="${esc(m.thema)}" placeholder="Bijv. Haarverzorging lente 2026"
+              onchange="setField('${key}','thema',this.value)">
+          </div>
+          <div class="field full">
+            <label>Onderwerpregel</label>
+            <input type="text" value="${esc(m.subject)}" placeholder="Bijv. 🌸 Klaar voor de lente?"
+              onchange="setField('${key}','subject',this.value)">
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <select onchange="setField('${key}','status',this.value)">
+              ${STATUSES.map(s => `<option ${m.status===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Doel mailing</label>
+            <select onchange="setField('${key}','doel',this.value)">
+              <option value="">— Kies doel —</option>
+              ${DOELEN.map(s => `<option ${m.doel===s?'selected':''}>${s}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field full">
+            <label>Call-to-action</label>
+            <input type="text" value="${esc(m.cta)}" placeholder="Bijv. Plan een afspraak"
+              onchange="setField('${key}','cta',this.value)">
+          </div>
+          <div class="field full">
+            <label>Notities &amp; opmerkingen</label>
+            <textarea placeholder="Interne notities, links, feedback, ideeën..."
+              onchange="setField('${key}','notities',this.value)">${esc(m.notities)}</textarea>
+          </div>
+        </div>
+        <div class="detail-actions">
+          <div class="detail-info">${seg.bedrijf} · ${seg.geslacht}</div>
+          <button class="btn btn-primary" onclick="saveMailing('${key}')">Opslaan</button>
+        </div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('kalenderList').innerHTML = html;
+}
+
+// ── Render ideeën ─────────────────────────────────────────────────────────────
+function renderIdeeen() {
+  const listEl = document.getElementById('ideaList');
+  if (ideas.length === 0) {
+    listEl.innerHTML = `<div class="empty-state"><div class="empty-icon">💡</div><div class="empty-text">Nog geen ideeën. Schiet er gerust eentje in!</div></div>`;
+    return;
+  }
+  const segMap = {};
+  SEGMENTS.forEach(s => segMap[s.id] = s);
+  listEl.innerHTML = ideas.map(idea => {
+    const isJ = idea.user === 'jeffrey';
+    const seg = segMap[idea.segId];
+    return `<div class="idea-item">
+      <div class="idea-avatar ${isJ ? 'av-j' : 'av-m'}">${isJ ? 'JE' : 'MA'}</div>
+      <div class="idea-content">
+        <div class="idea-text">${esc(idea.text)}</div>
+        <div class="idea-meta">
+          <span>${isJ ? 'Jeffrey' : 'Mario'}</span>
+          <span class="sep">·</span>
+          <span>${esc(idea.company)}</span>
+          ${seg ? `<span class="sep">·</span><span class="badge ${seg.cls}" style="font-size:10px">${seg.label}</span>` : ''}
+          <span class="sep">·</span>
+          <span>${esc(idea.date)}</span>
+        </div>
+      </div>
+      <button class="idea-del" onclick="deleteIdea('${idea.fbId}')" title="Verwijderen">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ── Render dashboard ──────────────────────────────────────────────────────────
+function renderDashboard() {
+  const total = thursdays.length;
+  const counts = {};
+  STATUSES.forEach(s => counts[s] = 0);
+  thursdays.forEach((d, i) => {
+    const key = d.toISOString().slice(0,10);
+    const m = getMailing(key, i % 4);
+    counts[m.status] = (counts[m.status] || 0) + 1;
+  });
+  const done = counts['Verzonden'] || 0;
+  const pct = Math.round(done / total * 100);
+  const stColors = {
+    'Idee':'#9ca3af','In uitwerking':'#d97706','Klaar':'#059669','Verzonden':'#0284c7','Achterstand':'#dc2626'
+  };
+
+  let html = `<div class="stats-row">
+    <div class="stat"><div class="stat-num">${total}</div><div class="stat-lbl">Mailings gepland</div></div>
+    <div class="stat"><div class="stat-num">${done}</div><div class="stat-lbl">Verzonden</div></div>
+    <div class="stat"><div class="stat-num">${counts['Klaar']||0}</div><div class="stat-lbl">Klaar</div></div>
+    <div class="stat"><div class="stat-num">${counts['Achterstand']||0}</div><div class="stat-lbl">Achterstand</div></div>
+    <div class="stat"><div class="stat-num">${ideas.length}</div><div class="stat-lbl">Ideeën</div></div>
+  </div>
+
+  <div class="dash-card">
+    <div class="section-title">Voortgang 2026</div>
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-label">${pct}%</div>
+    </div>
+    <div style="font-size:12px;color:var(--muted)">${done} van ${total} mailings verzonden</div>
+  </div>
+
+  <div class="dash-card">
+    <div class="section-title">Status verdeling</div>
+    ${STATUSES.map(s => {
+      const c = counts[s] || 0;
+      const p = Math.round(c / total * 100);
+      return `<div class="status-bar-row">
+        <span class="badge ${stCls(s)}" style="min-width:110px;text-align:center">${s}</span>
+        <div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:${p}%;background:${stColors[s]}"></div></div>
+        <span class="progress-label">${c}</span>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="dash-card">
+    <div class="section-title">Per segment</div>
+    ${SEGMENTS.map((seg, si) => {
+      const keys = thursdays.filter((_,i) => i%4===si).map(d => d.toISOString().slice(0,10));
+      const sent = keys.filter(k => mailings[k] && mailings[k].status === 'Verzonden').length;
+      return `<div class="seg-row">
+        <span class="badge ${seg.cls}" style="min-width:150px;text-align:center">${seg.label}</span>
+        <span class="seg-count">${sent} / ${keys.length} verzonden</span>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="dash-card export-row">
+    <div class="section-title" style="margin-bottom:8px">Export</div>
+    <button class="btn btn-ghost" onclick="exportCSV()">⬇ Exporteren als CSV</button>
+  </div>`;
+
+  document.getElementById('dashContent').innerHTML = html;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function stCls(s) { return 'st-' + s.toLowerCase().replace(/\s+/g,'-'); }
+
+window.toggleExpand = function(key) {
+  expanded[key] = !expanded[key];
+  renderKalender();
+};
+
+window.setField = function(key, field, val) {
+  if (!mailings[key]) return;
+  mailings[key][field] = val;
+};
+
+window.showPage = function(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+  renderCurrentPage();
+};
+
+function renderCurrentPage() {
+  if (document.getElementById('page-kalender').classList.contains('active')) renderKalender();
+  else if (document.getElementById('page-ideeen').classList.contains('active')) renderIdeeen();
+  else if (document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+}
+
+function updateIdeaCount() {
+  const el = document.getElementById('ideaCount');
+  if (ideas.length > 0) { el.textContent = ideas.length; el.style.display = 'inline'; }
+  else el.style.display = 'none';
+}
+
+window.setIdeaUser = function(u) {
+  ideaUser = u;
+  document.querySelectorAll('.user-opt').forEach(b => b.classList.remove('active'));
+  document.getElementById('uopt-' + u).classList.add('active');
+};
+
+window.openUserModal = function() {
+  document.getElementById('userModal').classList.add('open');
+};
+window.closeUserModal = function() {
+  document.getElementById('userModal').classList.remove('open');
+};
+window.setCurrentUser = function(u) {
+  currentUser = u;
+  localStorage.setItem('planner_user', u);
+  document.getElementById('currentUserName').textContent = u === 'jeffrey' ? 'Jeffrey' : 'Mario';
+  document.getElementById('currentAvatar').className = 'user-avatar ' + (u === 'jeffrey' ? 'av-j' : 'av-m');
+  document.getElementById('currentAvatar').textContent = u === 'jeffrey' ? 'JE' : 'MA';
+  setIdeaUser(u);
+  closeUserModal();
+};
+
+window.exportCSV = function() {
+  const rows = [['Datum','Bedrijf','Segment','Geslacht','Thema','Onderwerpregel','Doel','CTA','Status','Notities']];
+  thursdays.forEach((d, i) => {
+    const seg = SEGMENTS[i % 4];
+    const key = d.toISOString().slice(0,10);
+    const m = getMailing(key, i % 4);
+    rows.push([d.toLocaleDateString('nl-NL'),seg.bedrijf,seg.segment,seg.geslacht,m.thema,m.subject,m.doel,m.cta,m.status,m.notities]);
+  });
+  const csv = rows.map(r => r.map(c => '"' + (c||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'nieuwsbrief_kalender_2026.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV gedownload!');
+};
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+if (!currentUser) {
+  setTimeout(() => document.getElementById('userModal').classList.add('open'), 600);
+} else {
+  setCurrentUser(currentUser);
+}
+renderKalender();
+</script>
+</body>
+</html>

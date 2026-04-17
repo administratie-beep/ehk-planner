@@ -370,8 +370,8 @@ body {
     <div class="login-title">Nieuwsbrief Planner</div>
     <div class="login-sub">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
     <div class="login-field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="jouw@email.nl" autocomplete="email"></div>
-    <div class="login-field"><label>Wachtwoord</label><input type="password" id="loginPassword" placeholder="20222022202220222022202220222022" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="login-btn" onclick="doLogin()">Inloggen</button>
+    <div class="login-field"><label>Wachtwoord</label><input type="password" id="loginPassword" placeholder="20222022202220222022202220222022" autocomplete="current-password" onkeydown="if(event.key==='Enter')window._doLogin&&window._doLogin()"></div>
+    <button class="login-btn" onclick="window._doLogin&&window._doLogin()">Inloggen</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
@@ -768,8 +768,6 @@ function renderDashboard() {
   document.getElementById('dashContent').innerHTML = html;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function stCls(s) { return 'st-' + s.toLowerCase().replace(/\s+/g,'-'); }
 
 window.toggleExpand = function(key) {
   expanded[key] = !expanded[key];
@@ -866,7 +864,7 @@ function startFirestoreListeners() {
   }, () => {});
 }
 
-window.doLogin = async function() {
+window._doLogin = async function() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');

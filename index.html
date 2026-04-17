@@ -327,12 +327,57 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+/* ── Login scherm ── */
+.login-screen {
+  display: none; position: fixed; inset: 0;
+  background: var(--cream);
+  z-index: 500; align-items: center; justify-content: center;
+}
+.login-screen.active { display: flex; }
+.login-box {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 36px 32px;
+  width: calc(100% - 32px); max-width: 360px; text-align: center;
+}
+.login-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 4px; }
+.login-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+.login-field { margin-bottom: 12px; text-align: left; }
+.login-field label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+.login-field input {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border-strong); border-radius: var(--radius);
+  background: var(--surface2); color: var(--ink);
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+}
+.login-field input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(191,167,97,.15); background: var(--surface); }
+.login-btn {
+  width: 100%; padding: 11px; background: var(--navy); color: white;
+  border: none; border-radius: var(--radius);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; margin-top: 8px; transition: background .15s;
+}
+.login-btn:hover { background: var(--navy-mid); }
+.login-error { font-size: 12px; color: #dc2626; margin-top: 10px; min-height: 18px; }
 </style>
 </head>
 <body>
 
+<!-- Login scherm -->
+<div class="login-screen active" id="loginScreen">
+  <div class="login-box">
+    <svg viewBox="0 0 52 52" fill="none" style="width:52px;height:52px;margin:0 auto 20px"><rect width="52" height="52" rx="14" fill="#1b2a4a"/><path d="M26 10C19 10 13 16 13 23c0 4.5 2.2 8.5 5.5 11V37h15v-3c3.3-2.5 5.5-6.5 5.5-11 0-7-6-13-13-13z" fill="#bfa761"/><rect x="18" y="37" width="16" height="3" rx="1.5" fill="rgba(255,255,255,.35)"/></svg>
+    <div class="login-title">Nieuwsbrief Planner</div>
+    <div class="login-sub">EchtHaar Kliniek &amp; Hair Consultancy Bussum</div>
+    <div class="login-field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="jouw@email.nl" autocomplete="email"></div>
+    <div class="login-field"><label>Wachtwoord</label><input type="password" id="loginPassword" placeholder="20222022202220222022202220222022" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="login-btn" onclick="doLogin()">Inloggen</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
 <!-- Header -->
-<header class="header">
+<header class="header" style="display:none">
   <div class="header-brand">
     <svg class="header-logo" viewBox="0 0 28 28" fill="none">
       <rect width="28" height="28" rx="8" fill="rgba(255,255,255,.12)"/>
@@ -354,14 +399,14 @@ body {
 </header>
 
 <!-- Nav -->
-<nav class="nav-bar">
+<nav class="nav-bar" style="display:none">
   <button class="nav-tab active" onclick="showPage('kalender',this)"><span class="nav-icon">📅</span> Kalender</button>
   <button class="nav-tab" onclick="showPage('ideeen',this)"><span class="nav-icon">💡</span> Ideeënbak <span id="ideaCount" style="font-size:10px;background:var(--gold);color:white;padding:1px 5px;border-radius:10px;margin-left:2px;display:none"></span></button>
   <button class="nav-tab" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</button>
 </nav>
 
 <!-- Main -->
-<main class="main">
+<main class="main" style="display:none">
 
   <!-- Kalender -->
   <div id="page-kalender" class="page active">
@@ -436,7 +481,8 @@ body {
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, onSnapshot, collection, addDoc, deleteDoc, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 // ── FIREBASE CONFIG ── Vervang dit met jouw eigen Firebase config ──────────
 const firebaseConfig = {
@@ -451,6 +497,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 const SEGMENTS = [
@@ -484,21 +531,6 @@ function setSyncStatus(s) {
   const dot = document.getElementById('syncDot');
   dot.className = 'sync-dot' + (s === 'syncing' ? ' syncing' : s === 'offline' ? ' offline' : '');
 }
-
-// ── Firestore listeners ───────────────────────────────────────────────────────
-// Mailings
-onSnapshot(collection(db, 'mailings'), snap => {
-  setSyncStatus('ok');
-  snap.forEach(d => { mailings[d.id] = d.data(); });
-  renderCurrentPage();
-}, () => setSyncStatus('offline'));
-
-// Ideas
-onSnapshot(query(collection(db, 'ideas'), orderBy('ts', 'desc')), snap => {
-  ideas = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
-  renderCurrentPage();
-  updateIdeaCount();
-}, () => {});
 
 // ── Save mailing ──────────────────────────────────────────────────────────────
 async function saveMailing(key) {
@@ -813,13 +845,74 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-if (!currentUser) {
-  setTimeout(() => document.getElementById('userModal').classList.add('open'), 600);
-} else {
-  setCurrentUser(currentUser);
+// ── Auth & Init ──────────────────────────────────────────────────────────────
+let firestoreUnsubMailings = null;
+let firestoreUnsubIdeas = null;
+
+function startFirestoreListeners() {
+  if (firestoreUnsubMailings) firestoreUnsubMailings();
+  if (firestoreUnsubIdeas) firestoreUnsubIdeas();
+
+  firestoreUnsubMailings = onSnapshot(collection(db, 'mailings'), snap => {
+    setSyncStatus('ok');
+    snap.forEach(d => { mailings[d.id] = d.data(); });
+    renderCurrentPage();
+  }, () => setSyncStatus('offline'));
+
+  firestoreUnsubIdeas = onSnapshot(query(collection(db, 'ideas'), orderBy('ts', 'desc')), snap => {
+    ideas = snap.docs.map(d => ({ fbId: d.id, ...d.data() }));
+    renderCurrentPage();
+    updateIdeaCount();
+  }, () => {});
 }
-renderKalender();
+
+window.doLogin = async function() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Vul je e-mailadres en wachtwoord in.'; return; }
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+  } catch(e) {
+    errEl.textContent = 'Inloggen mislukt. Controleer je gegevens.';
+  }
+};
+
+window.doLogout = async function() {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth, user => {
+  const loginScreen = document.getElementById('loginScreen');
+  const appHeader = document.querySelector('.header');
+  const appNav = document.querySelector('.nav-bar');
+  const appMain = document.querySelector('.main');
+
+  if (user) {
+    loginScreen.classList.remove('active');
+    appHeader.style.display = '';
+    appNav.style.display = '';
+    appMain.style.display = '';
+
+    // Detecteer gebruiker op basis van e-mail
+    const isJeffrey = user.email.toLowerCase().includes('lenting') || user.email.toLowerCase().includes('jeffrey');
+    const detectedUser = isJeffrey ? 'jeffrey' : 'mario';
+    setCurrentUser(detectedUser);
+    startFirestoreListeners();
+    renderKalender();
+  } else {
+    loginScreen.classList.add('active');
+    appHeader.style.display = 'none';
+    appNav.style.display = 'none';
+    appMain.style.display = 'none';
+  }
+});
+
+// Voeg uitlogknop toe aan header user-pill
+window.openUserModal = function() {
+  if (confirm('Uitloggen?')) doLogout();
+};
 </script>
 </body>
 </html>
